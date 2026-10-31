@@ -4,6 +4,31 @@
   "private": true,
   "type": "module",
   "description": "Fictional-data academic food-management personalisation prototype",
-  "scripts": { "test": "node --test" },
-  "engines": { "node": ">=22" }
+  "scripts": {
+    "test": "node --test tests/personalisation.test.js tests/database.test.js && vitest run",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "evaluate": "node scripts/evaluate-scenarios.js"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.13",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@vitejs/plugin-react": "^6.1.2",
+    "jsdom": "^29.1.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
 }

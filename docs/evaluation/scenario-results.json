@@ -1,0 +1,219 @@
+{
+  "generatedAt": "2026-10-31T08:01:24.850Z",
+  "ruleVersion": "provisional-v1",
+  "scope": "Synthetic JavaScript scenario evaluation; not participant or food-waste outcome data",
+  "rows": [
+    {
+      "scenario": "no-frequent-indicators",
+      "household": "Fictional Household A",
+      "scores": {
+        "overbuying": 0,
+        "forgettingFood": 1,
+        "poorMealPlanning": 0,
+        "discardingLeftovers": 1,
+        "storageUncertainty": 0
+      },
+      "expectedProfiles": [],
+      "actualProfiles": [],
+      "expectedRecommendations": [
+        "general-prevention"
+      ],
+      "actualRecommendations": [
+        "general-prevention"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "overbuyer-only",
+      "household": "Fictional Household B",
+      "scores": {
+        "overbuying": 2,
+        "forgettingFood": 0,
+        "poorMealPlanning": 1,
+        "discardingLeftovers": 0,
+        "storageUncertainty": 1
+      },
+      "expectedProfiles": [
+        "Overbuyer"
+      ],
+      "actualProfiles": [
+        "Overbuyer"
+      ],
+      "expectedRecommendations": [
+        "check-before-shopping"
+      ],
+      "actualRecommendations": [
+        "check-before-shopping"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "forgetter-only",
+      "household": "Fictional Household C",
+      "scores": {
+        "overbuying": 0,
+        "forgettingFood": 2,
+        "poorMealPlanning": 0,
+        "discardingLeftovers": 1,
+        "storageUncertainty": 0
+      },
+      "expectedProfiles": [
+        "Food Forgetter"
+      ],
+      "actualProfiles": [
+        "Food Forgetter"
+      ],
+      "expectedRecommendations": [
+        "use-first-area"
+      ],
+      "actualRecommendations": [
+        "use-first-area"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "planner-only",
+      "household": "Fictional Household D",
+      "scores": {
+        "overbuying": 1,
+        "forgettingFood": 0,
+        "poorMealPlanning": 2,
+        "discardingLeftovers": 0,
+        "storageUncertainty": 0
+      },
+      "expectedProfiles": [
+        "Poor Meal Planner"
+      ],
+      "actualProfiles": [
+        "Poor Meal Planner"
+      ],
+      "expectedRecommendations": [
+        "plan-before-shopping"
+      ],
+      "actualRecommendations": [
+        "plan-before-shopping"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "leftovers-only",
+      "household": "Fictional Household E",
+      "scores": {
+        "overbuying": 0,
+        "forgettingFood": 1,
+        "poorMealPlanning": 0,
+        "discardingLeftovers": 2,
+        "storageUncertainty": 0
+      },
+      "expectedProfiles": [
+        "Leftover Discarder"
+      ],
+      "actualProfiles": [
+        "Leftover Discarder"
+      ],
+      "expectedRecommendations": [
+        "plan-leftover-use"
+      ],
+      "actualRecommendations": [
+        "plan-leftover-use"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "storage-only",
+      "household": "Fictional Household F",
+      "scores": {
+        "overbuying": 0,
+        "forgettingFood": 0,
+        "poorMealPlanning": 1,
+        "discardingLeftovers": 0,
+        "storageUncertainty": 2
+      },
+      "expectedProfiles": [
+        "Storage Learner"
+      ],
+      "actualProfiles": [
+        "Storage Learner"
+      ],
+      "expectedRecommendations": [
+        "check-storage-instructions"
+      ],
+      "actualRecommendations": [
+        "check-storage-instructions"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "multiple-profiles",
+      "household": "Fictional Household G",
+      "scores": {
+        "overbuying": 2,
+        "forgettingFood": 2,
+        "poorMealPlanning": 0,
+        "discardingLeftovers": 1,
+        "storageUncertainty": 2
+      },
+      "expectedProfiles": [
+        "Overbuyer",
+        "Food Forgetter",
+        "Storage Learner"
+      ],
+      "actualProfiles": [
+        "Overbuyer",
+        "Food Forgetter",
+        "Storage Learner"
+      ],
+      "expectedRecommendations": [
+        "check-before-shopping",
+        "use-first-area",
+        "check-storage-instructions"
+      ],
+      "actualRecommendations": [
+        "check-before-shopping",
+        "use-first-area",
+        "check-storage-instructions"
+      ],
+      "passed": true
+    },
+    {
+      "scenario": "all-profiles",
+      "household": "Fictional Household H",
+      "scores": {
+        "overbuying": 2,
+        "forgettingFood": 2,
+        "poorMealPlanning": 2,
+        "discardingLeftovers": 2,
+        "storageUncertainty": 2
+      },
+      "expectedProfiles": [
+        "Overbuyer",
+        "Food Forgetter",
+        "Poor Meal Planner",
+        "Leftover Discarder",
+        "Storage Learner"
+      ],
+      "actualProfiles": [
+        "Overbuyer",
+        "Food Forgetter",
+        "Poor Meal Planner",
+        "Leftover Discarder",
+        "Storage Learner"
+      ],
+      "expectedRecommendations": [
+        "check-before-shopping",
+        "use-first-area",
+        "plan-before-shopping",
+        "plan-leftover-use",
+        "check-storage-instructions"
+      ],
+      "actualRecommendations": [
+        "check-before-shopping",
+        "use-first-area",
+        "plan-before-shopping",
+        "plan-leftover-use",
+        "check-storage-instructions"
+      ],
+      "passed": true
+    }
+  ]
+}

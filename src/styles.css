@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@layer base {
+  body { margin: 0; background: #f7f8f4; color: #263b32; font-family: ui-sans-serif, system-ui, sans-serif; }
+  button, select, input, summary { accent-color: #16634d; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid #b76b16; outline-offset: 4px; }
+}
+@layer components {
+  .panel { @apply rounded-2xl border border-stone-200 bg-white p-5 sm:p-7; }
+  .eyebrow { @apply text-xs font-bold uppercase tracking-widest text-emerald-800; }
+  .frequency { @apply relative cursor-pointer; }
+  .frequency input { @apply absolute left-1/2 top-3 -translate-x-1/2; }
+  .frequency span { @apply block rounded-lg border border-stone-300 px-1 pt-9 pb-3 text-center text-xs sm:text-sm; }
+  .frequency:has(input:checked) span { @apply border-emerald-800 bg-emerald-50 text-emerald-950; }
+  .primary { @apply rounded-lg bg-emerald-900 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-800; }
+  .secondary { @apply rounded-lg border border-stone-300 px-5 py-3 text-sm font-semibold hover:bg-stone-100; }
+  .skip-link { @apply sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-10 focus:bg-white focus:p-3; }
+}
