@@ -1,0 +1,9 @@
+{
+  "name": "smartkai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Fictional-data academic food-management personalisation prototype",
+  "scripts": { "test": "node --test" },
+  "engines": { "node": ">=22" }
+}
