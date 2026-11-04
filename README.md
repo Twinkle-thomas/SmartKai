@@ -4,6 +4,8 @@ Academic prototype for **Mitigating Household Food Waste in New Zealand Through 
 
 Use fictional household data only. The five behaviour profiles and thresholds are provisional design decisions, not statistically validated classifications. This prototype demonstrates rule-based personalisation; it does not establish a reduction in actual household food waste.
 
+The current prototype implements all nine requested tool workflows: pantry categories, food-date tracking, shopping, meal planning, leftover status/history, sourced storage guidance, a limited food-photo AI preview, barcode lookup and a private community-sharing simulation. Open **All tools** (`#/tools`) to explore them. See the [nine-tool delivery and manual checklist](docs/nine-tools-delivery.md) for current integrated workflows and configuration. See the [current feature audit](docs/feature-completion-audit.md) for implemented scope, validation and device-dependent limits.
+
 ## Architecture
 
 ```text
@@ -17,7 +19,13 @@ React + Vite + Tailwind
 
 The browser maps Never/Sometimes/Often to 0/1/2. The domain module validates all five scores, assigns every profile whose indicator is 2, and returns recommendations and explicit assignment reasons. If none is 2, it returns general guidance. The UI owns form state; the domain module has no React or database dependencies. The persistence service saves input and output together through a database transaction and reports save failures separately from successful local evaluation.
 
-No external AI service is required. Barcode scanning, image recognition, a meal-planning feature and community sharing are outside the initial scope. A recommendation about considering upcoming meals does not imply a meal-planning feature.
+The initial research scope did not include scanners, meal planning or community sharing. These were subsequently authorised and implemented as the bounded prototype workflows described in the delivery document. Food recognition runs locally without a paid inference service.
+
+Later increments added saved pantry inventory and a 30-day questionnaire check-in. See [Pantry and check-ins](docs/pantry-and-check-ins.md) for workflow, schema, simulated evaluation cases and measurement limits. Pantry CRUD, quantities, date types, use-first/leftover views and storage notes are available; shopping lists and the manual weekly meal planner are now available. Follow-up scores describe self-reported habits and do not measure actual waste reduction.
+
+Optional [weekly reminders](docs/reminders.md) let evaluators choose days and times, receive in-app alerts and export saved schedules to a phone calendar. SmartKai itself does not send notifications while closed; phone-calendar alerts depend on importing the file and calendar/device settings.
+
+The [food-recognition preview](docs/food-recognition.md) adds local browser AI without a paid inference API. It supports ten food classes and requires manual review, quantities and explicit pantry saving. Photos remain local; the model cannot identify a full grocery inventory or infer dates/safety. This is a later authorised enhancement beyond the initial scope above.
 
 ## Database schema
 
@@ -57,6 +65,14 @@ The core prototype is implemented. Distinguish automated checks, developer-repor
 
 ## Run the current increment
 
+The homepage now presents the product and six feature previews. Use **Explore SmartKai** for the dashboard or **Get Personalised Recommendations** to open the assessment. The questionnaire is not mounted on the homepage. Five planned tools are explicitly labelled **In development**; existing assessment, authentication and saved history remain functional. See [homepage design and routes](docs/homepage-redesign.md).
+
+Homepage-only Motion effects add reveals, restrained parallax and a desktop sticky product story, with inline layouts for small screens and reduced motion. See [scroll animation behaviour and verification](docs/homepage-scroll-motion.md).
+
+The homepage now includes locally hosted, responsive food photography, preserving the green theme. See [photography sources, licensing and optimisation](docs/photography.md).
+
+Dedicated `#/register` and `#/login` pages now reuse Supabase Auth and the existing account flow. Live registration requires enabling sign-ups, setting confirmation URLs and configuring email delivery in the project; see [registration and login setup](docs/registration-login.md).
+
 Use Node.js 22.12 or newer (Node.js 24 was used for verification). Install dependencies from the lockfile; no Supabase credentials are needed:
 
 ```powershell
@@ -93,3 +109,9 @@ The questions are an initial operationalisation of the supplied profiles and sho
 ## Supabase connection
 
 Follow [Supabase setup](docs/supabase-setup.md) to create a project, apply the migration and configure the ignored environment file. The UI now supports evaluator sign-in, explicit save, history, saved snapshot inspection and sign-out. Read-only live checks passed; the developer also reported successful authenticated save/reload and account-isolation checks. Local SQL tests use PGlite with stand-in Auth functions; they do not test Supabase Auth itself. The developer created the Supabase project and applied the migration. The agent has not made hosted database writes.
+
+Shopping lists are now available at `#/shopping`: saved items and quantities, purchased checkboxes and a companion pantry view. See [shopping-list implementation and evaluation](docs/shopping-lists.md). The manual weekly meal planner is available in the subsequent increment.
+
+The [meal planner](docs/meal-planning.md) at `#/meals` saves dated meals, portions and ingredient/leftover notes, with explicit missing-ingredient additions to shopping. It does not reserve or deduct stock, infer recipes or establish measured waste reduction.
+
+[Receipt import and pantry recipe ideas](docs/receipt-import-and-recipes.md) now extend these tools: local English OCR with mandatory item review, and a small original recipe library matched to recorded pantry names. No receipt photos/text are stored remotely, no paid OCR API is used, and neither flow changes stock or saves an item/meal without confirmation.

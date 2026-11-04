@@ -1,0 +1,8 @@
+import {useState,useRef,useEffect} from 'react';
+import {createInventoryService} from '../services/inventory.js';
+export default function InventoryHistory({client,userId}){
+ const [state,setState]=useState('idle'),[events,setEvents]=useState([]);const alive=useRef(true);
+ useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
+ async function load(){setState('loading');try{const data=await createInventoryService(client,userId).history();if(alive.current){setEvents(data);setState('ready');}}catch{if(alive.current)setState('error');}}
+ return <section className="panel mb-6"><h2 className="text-2xl font-semibold">Recorded consumption and disposal</h2><p className="mt-2 text-sm">Manually confirmed outcomes, including partial quantities. These records describe reported actions and do not measure food-waste reduction.</p><button className="secondary mt-3" disabled={state==='loading'} onClick={load}>{state==='idle'?'Load outcome history':'Refresh outcome history'}</button>{state==='loading'&&<p role="status">Loading outcomes…</p>}{state==='error'&&<p role="alert">Could not load outcomes. Try refreshing.</p>}{state==='ready'&&(!events.length?<p className="mt-3">No recorded outcomes yet.</p>:<ul className="food-item-list">{events.map(event=><li key={event.id}><strong>{event.food_name}</strong> · {event.quantity} {event.unit} · {event.outcome}<p className="text-sm">{new Date(event.created_at).toLocaleString('en-NZ',{timeZone:'Pacific/Auckland'})} (NZ time){event.reason?` · ${event.reason}`:''}{event.meal_id?' · Confirmed meal consumption':''}</p></li>)}</ul>)}{state==='ready'&&<p className="text-xs mt-2">Up to 100 most recent events. Quantities in different units are not combined.</p>}</section>;
+}

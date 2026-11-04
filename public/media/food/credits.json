@@ -1,0 +1,176 @@
+[
+  {
+    "id": "fresh-food",
+    "photographer": "Collab Media",
+    "photoId": "lzyaeNQ9wU4",
+    "image": "photo-1641893720944-15c83082f2f5",
+    "source": "https://unsplash.com/photos/a-pile-of-vegetables-sitting-on-top-of-a-table-lzyaeNQ9wU4",
+    "license": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-31",
+    "variants": [
+      {
+        "file": "/media/food/fresh-food-640.webp",
+        "width": 640,
+        "height": 426,
+        "bytes": 44726
+      },
+      {
+        "file": "/media/food/fresh-food-1024.webp",
+        "width": 1024,
+        "height": 682,
+        "bytes": 81658
+      },
+      {
+        "file": "/media/food/fresh-food-1600.webp",
+        "width": 1600,
+        "height": 1066,
+        "bytes": 136968
+      }
+    ]
+  },
+  {
+    "id": "pantry",
+    "photographer": "Luisa Brimble",
+    "photoId": "i-GPyFK_SJg",
+    "image": "photo-1592178036182-5400889dfc74",
+    "source": "https://unsplash.com/photos/assorted-glass-jars-on-white-wooden-shelf-i-GPyFK_SJg",
+    "license": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-31",
+    "variants": [
+      {
+        "file": "/media/food/pantry-640.webp",
+        "width": 640,
+        "height": 960,
+        "bytes": 81762
+      },
+      {
+        "file": "/media/food/pantry-1024.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 206412
+      },
+      {
+        "file": "/media/food/pantry-1600.webp",
+        "width": 1600,
+        "height": 2400,
+        "bytes": 564034
+      }
+    ]
+  },
+  {
+    "id": "prepared-meals",
+    "photographer": "Ella Olsson",
+    "photoId": "lMcRyBx4G50",
+    "image": "photo-1543352632-5a4b24e4d2a6",
+    "source": "https://unsplash.com/photos/meal-prep-containers-with-healthy-food-lMcRyBx4G50",
+    "license": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-31",
+    "variants": [
+      {
+        "file": "/media/food/prepared-meals-640.webp",
+        "width": 640,
+        "height": 512,
+        "bytes": 64662
+      },
+      {
+        "file": "/media/food/prepared-meals-1024.webp",
+        "width": 1024,
+        "height": 819,
+        "bytes": 156282
+      },
+      {
+        "file": "/media/food/prepared-meals-1600.webp",
+        "width": 1600,
+        "height": 1280,
+        "bytes": 314336
+      }
+    ]
+  },
+  {
+    "id": "preparation",
+    "photographer": "shraga kopstein",
+    "photoId": "EGtRM9PFG64",
+    "image": "photo-1633910059461-8b5e672627de",
+    "source": "https://unsplash.com/photos/a-close-up-of-a-cutting-board-with-chopped-vegetables-EGtRM9PFG64",
+    "license": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-31",
+    "variants": [
+      {
+        "file": "/media/food/preparation-640.webp",
+        "width": 640,
+        "height": 426,
+        "bytes": 24288
+      },
+      {
+        "file": "/media/food/preparation-1024.webp",
+        "width": 1024,
+        "height": 682,
+        "bytes": 43860
+      },
+      {
+        "file": "/media/food/preparation-1600.webp",
+        "width": 1600,
+        "height": 1066,
+        "bytes": 78316
+      }
+    ]
+  },
+  {
+    "id": "market",
+    "photographer": "Nina Weishaupt",
+    "photoId": "nwpPqHpFge4",
+    "image": "photo-1771659753573-e8498a262168",
+    "source": "https://unsplash.com/photos/fresh-vegetables-and-produce-displayed-at-a-market-nwpPqHpFge4",
+    "license": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-31",
+    "variants": [
+      {
+        "file": "/media/food/market-640.webp",
+        "width": 640,
+        "height": 960,
+        "bytes": 97014
+      },
+      {
+        "file": "/media/food/market-1024.webp",
+        "width": 1024,
+        "height": 1536,
+        "bytes": 185440
+      },
+      {
+        "file": "/media/food/market-1600.webp",
+        "width": 1600,
+        "height": 2400,
+        "bytes": 328586
+      }
+    ]
+  },
+  {
+    "id": "storage",
+    "photographer": "Ello",
+    "photoId": "AEU9UZstCfs",
+    "image": "photo-1606859191214-25806e8e2423",
+    "source": "https://unsplash.com/photos/colorful-food-containers-in-refrigerator-AEU9UZstCfs",
+    "license": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-31",
+    "variants": [
+      {
+        "file": "/media/food/storage-640.webp",
+        "width": 640,
+        "height": 445,
+        "bytes": 54506
+      },
+      {
+        "file": "/media/food/storage-1024.webp",
+        "width": 1024,
+        "height": 712,
+        "bytes": 113136
+      },
+      {
+        "file": "/media/food/storage-1600.webp",
+        "width": 1600,
+        "height": 1112,
+        "bytes": 211306
+      }
+    ]
+  }
+]

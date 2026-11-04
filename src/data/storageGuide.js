@@ -1,0 +1,10 @@
+const MPI = 'https://www.mpi.govt.nz/food-safety-home/preparing-and-storing-food-safely-at-home/safe-food-preparation-cooking-and-storage-at-home';
+const LABELS = 'https://www.foodstandards.gov.au/consumer/labelling/dates';
+export const STORAGE_GUIDE = [
+  { id:'fridge', title:'Fridge organisation', category:'Fridge', text:'Keep the fridge between 2°C and 5°C. Separate raw food from ready-to-eat food, cover containers, and allow cold air to circulate.', source:MPI, sourceName:'New Zealand Food Safety / MPI' },
+  { id:'leftovers', title:'Cooling and storing leftovers', category:'Leftovers', text:'Chill or freeze cooked leftovers promptly, within two hours. Split large portions into smaller containers and keep refrigerated leftovers covered.', source:MPI, sourceName:'New Zealand Food Safety / MPI' },
+  { id:'leftover-time', title:'Different leftovers have different limits', category:'Leftovers', text:'MPI advises refrigerated rice-based leftovers and cooked food eaten cold within two days; leftovers reheated for eating within four days. A planned-use date cannot replace these instructions.', source:MPI, sourceName:'New Zealand Food Safety / MPI' },
+  { id:'freezer', title:'Thawing and reheating', category:'Freezer', text:'Thaw leftovers in the fridge or microwave, rather than on the bench. Reheat thoroughly above 75°C and only once.', source:MPI, sourceName:'New Zealand Food Safety / MPI' },
+  { id:'date-labels', title:'Use-by and best-before', category:'Food dates', text:'Use-by dates address safety: do not eat food after that date. Best-before dates address quality. Follow the storage conditions on the label; an app cannot establish that food remains suitable.', source:LABELS, sourceName:'Food Standards Australia New Zealand' },
+  { id:'labels', title:'Pantry and opened packages', category:'Pantry', text:'Follow the manufacturer’s storage directions, including any instructions that apply after opening. Protect food in appropriate covered containers.', source:'https://www.foodstandards.gov.au/business/food-safety/storing-food-safely', sourceName:'Food Standards Australia New Zealand' },
+];

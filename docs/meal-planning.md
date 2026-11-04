@@ -1,0 +1,21 @@
+# Meal-planning increment
+
+`#/meals` is a saved, manual weekly planner for fictional evaluator households. It supports named meals on dates, Breakfast/Lunch/Dinner/Snack slots, 1–50 planned portions, ingredient notes, meal notes, an explicit leftover-use flag, edit/move and confirmed deletion. Monday–Sunday ranges use date-only UTC arithmetic; the initial date is the current Pacific/Auckland date, avoiding browser-timezone/DST shifts. A week displays up to 100 meals; dates from 2000–2100 are supported. Multiple meals may share the same slot.
+
+Pantry food loads independently and can be filtered to use-first items or leftovers. **Add to ingredient notes** copies a food name into the unsaved form, deduplicates identical lines and marks leftover planning when a leftover is selected. Users still review suitability, quantities and packaging instructions. This is a text snapshot, not a pantry foreign key, reservation or stock deduction. It stays readable if pantry entries are later renamed/deleted. A planned meal does not establish food safety or record that food has actually been used.
+
+From a saved meal, **Add missing ingredient** opens an explicit shopping form with blank quantity/unit. The user checks pantry/existing shopping entries and confirms the ingredient and amount. It uses the existing shopping service and stores the meal name/date in shopping notes. There is no automatic recipe generation, automatic missing-ingredient inference, quantity subtraction, unit conversion, duplicate merging or multi-meal batch transfer. Repeated confirmation can create another shopping item; failures direct users to check the actual list before retrying.
+
+Poor Meal Planner and Leftover Discarder recommendation actions now open this route. Meal-planning reminders also open it. Homepage/dashboard availability and previews are updated. Existing assessment rules/snapshots, evaluator sign-in, history, reminders and photo analysis are preserved. Dedicated leftover outcome tracking and detailed sourced storage guidance remain future increments.
+
+## Storage
+
+`20261103104230_meal_plans.sql` adds `public.meal_plans`, with UUID key, authenticated owner FK, bounded name/ingredient/meal notes, checked date, meal slot, integer portions, leftover-use boolean, fictional-data constraint and creation timestamp. `(owner_id, meal_date)` is indexed. Four RLS policies restrict CRUD to the owner; UPDATE checks both old and new ownership. Anonymous grants are revoked. Services strip extra input fields, validate before writes, and verify returned rows for mutations. One account represents one prototype household. No changes to previous tables or profile thresholds are required.
+
+The migration was applied through SQL to the configured SmartKai project and retained for clean setup. Do not blindly reapply it there; CLI migration history was not changed. Use synthetic meal names and ingredients, not participant data.
+
+## Evaluation
+
+Tests cover real dates, portions, bounded notes, week/year/DST calculations, NZ initial dates, ingredient-note deduplication, owner-scoped service calls, and recommendation/reminder routes. UI tests plan a soup dinner from a synthetic leftover, edit portions, move a meal to another week, add bread to shopping, reload and confirm deletion; they also cover separate load failures and unsuccessful writes. PostgreSQL tests verify constraints, CRUD, owner reassignment prevention, two-account isolation and anonymous denial. The planner demonstrates practical personalisation support; plans and shopping entries do not measure actual waste reduction.
+
+The test runner is capped at four workers to avoid CPU/memory contention across the growing jsdom suite; existing five-second test deadlines are retained. Hosted checks confirmed RLS, four owner policies, authenticated CRUD and no anonymous SELECT. A mutation smoke test was rolled back. Security advisors reported no meal-table finding; existing [security-definer](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable) and [password-protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) advisories remain unchanged.

@@ -1,11 +1,12 @@
 import React from 'react';
-import { test, expect, vi } from 'vitest';
+import { test, expect, vi, beforeEach } from 'vitest';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../src/App.jsx';
 import EvaluatorStorage from '../src/components/EvaluatorStorage.jsx';
 import { personalise } from '../src/domain/personalisation.js';
 import { SCENARIOS } from '../src/data/scenarios.js';
+beforeEach(() => window.history.replaceState(null, '', '/#/personalisation'));
 
 const session = (id = 'A') => ({ user: { id, email: `evaluator-${id}@example.test` } });
 const assessment = { ...personalise(SCENARIOS[6].scores), scores: SCENARIOS[6].scores, scenarioId: SCENARIOS[6].id };
@@ -39,25 +40,28 @@ test('sign in, save once, reload history, display snapshots and sign out', async
   const { client, limit } = fakeClient();
   const user = userEvent.setup();
   render(<App client={client} />);
-  await user.type(await screen.findByLabelText('Evaluator email'), 'evaluator-A@example.test');
+  await user.type(await screen.findByLabelText('Email'), 'evaluator-A@example.test');
   await user.type(screen.getByLabelText('Password'), 'fictional-test-password');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));
   expect(client.auth.signInWithPassword).toHaveBeenCalledWith({ email: 'evaluator-A@example.test', password: 'fictional-test-password' });
   await screen.findByText('No saved assessments yet.');
   expect(screen.getByRole('button', { name: 'Save assessment' })).toBeDisabled();
-  await user.selectOptions(screen.getByLabelText('Try a fictional test scenario'), 'multiple-profiles');
+  await user.selectOptions(screen.getByLabelText('Choose an example household'), 'multiple-profiles');
   await user.click(screen.getByRole('button', { name: /View household guidance/ }));
   limit.mockResolvedValue({ data: [savedRecord], error: null });
   await user.dblClick(screen.getByRole('button', { name: 'Save assessment' }));
   await screen.findByText(/Saved successfully/);
   expect(client.rpc).toHaveBeenCalledTimes(1);
   expect(screen.getByRole('button', { name: 'Assessment saved' })).toBeDisabled();
-  await user.click(await screen.findByText('Fictional Household saved-1'));
+  await user.click(await screen.findByText('Household saved-1'));
   expect(screen.getByText('Saved recommendations')).toBeVisible();
   expect(screen.getByText('Saved answers')).toBeVisible();
+  expect(document.body.textContent).not.toMatch(/fictional|threshold|provisional|score [012]/i);
   await user.click(screen.getByRole('button', { name: 'Sign out' }));
   await screen.findByRole('button', { name: 'Sign in' });
-  expect(screen.queryByText('Fictional Household saved-1')).not.toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Get started' })).toHaveAttribute('href', '#/register');
+  expect(screen.queryByRole('link', { name: 'Go to dashboard' })).not.toBeInTheDocument();
+  expect(screen.queryByText('Household saved-1')).not.toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Household results' })).toBeInTheDocument();
   expect(client.auth.signOut).toHaveBeenCalledWith({ scope: 'local' });
 });
@@ -67,7 +71,7 @@ test('failed sign-in clears password and preserves local access', async () => {
   client.auth.signInWithPassword.mockResolvedValue({ error: { message: 'invalid credentials' } });
   const user = userEvent.setup();
   render(<EvaluatorStorage client={client} assessment={assessment} />);
-  await user.type(await screen.findByLabelText('Evaluator email'), 'evaluator@example.test');
+  await user.type(await screen.findByLabelText('Email'), 'evaluator@example.test');
   await user.type(screen.getByLabelText('Password'), 'fictional-test-password');
   await user.click(screen.getByRole('button', { name: 'Sign in' }));
   expect(await screen.findByRole('alert')).toHaveTextContent('Sign-in failed');
@@ -81,7 +85,7 @@ test('failed save leaves local guidance and provides retry feedback', async () =
   const user = userEvent.setup();
   render(<App client={client} />);
   await screen.findByRole('button', { name: 'Save assessment' });
-  await user.selectOptions(screen.getByLabelText('Try a fictional test scenario'), 'multiple-profiles');
+  await user.selectOptions(screen.getByLabelText('Choose an example household'), 'multiple-profiles');
   await user.click(screen.getByRole('button', { name: /View household guidance/ }));
   await user.click(screen.getByRole('button', { name: 'Save assessment' }));
   expect(await screen.findByRole('alert')).toHaveTextContent('Save could not be confirmed');
@@ -99,7 +103,7 @@ test('restored session loads history; account switch clears prior records and re
   await screen.findByText('evaluator-B@example.test');
   await screen.findByText('No saved assessments yet.');
   await act(async () => completeOldRequest({ data: [savedRecord], error: null }));
-  expect(screen.queryByText('Fictional Household saved-1')).not.toBeInTheDocument();
+  expect(screen.queryByText('Household saved-1')).not.toBeInTheDocument();
   view.unmount();
   expect(unsubscribe).toHaveBeenCalled();
 });
@@ -112,10 +116,10 @@ test('history failure can be refreshed and saved snapshots survive remount', asy
   expect(await screen.findByRole('alert')).toHaveTextContent('Could not load history');
   limit.mockResolvedValue({ data: [savedRecord], error: null });
   await user.click(screen.getByRole('button', { name: 'Refresh history' }));
-  await screen.findByText('Fictional Household saved-1');
+  await screen.findByText('Household saved-1');
   view.unmount();
   render(<EvaluatorStorage client={client} assessment={null} />);
-  await screen.findByText('Fictional Household saved-1');
+  await screen.findByText('Household saved-1');
 });
 
 test('answer changes during save do not mark the new assessment as saved', async () => {

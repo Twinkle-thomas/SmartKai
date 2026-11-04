@@ -1,0 +1,8 @@
+import {useState} from 'react';
+import {todayInNZ} from '../domain/meals.js';
+import {foodDateStatus} from '../domain/foodDates.js';
+export default function ExpiryCalendar({items,onEdit}){
+ const [month,setMonth]=useState(()=>todayInNZ().slice(0,7));
+ const valid=/^\d{4}-\d{2}$/.test(month);const start=valid?new Date(`${month}-01T12:00:00Z`):null;const length=start?new Date(Date.UTC(start.getUTCFullYear(),start.getUTCMonth()+1,0)).getUTCDate():0;
+ return <section className="panel mb-6"><h2 className="text-2xl font-semibold">Food-date calendar</h2><label className="food-filter">Calendar month<input type="month" min="2000-01" max="2100-12" value={month} onChange={e=>setMonth(e.target.value)}/></label><p className="mt-3">Select a food entry to edit its pantry record. Blank days have no recorded dates. <a className="underline" href="#/reminders">Choose weekly pantry reminders</a>.</p><div className="expiry-calendar mt-4">{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=><span key={day} aria-hidden="true">{day}</span>)}{Array.from({length:start?(start.getUTCDay()+6)%7:0},(_,i)=><span key={`blank${i}`}/>)}{Array.from({length},(_,i)=>{const date=`${month}-${String(i+1).padStart(2,'0')}`;const foods=items.filter(item=>item.food_date===date&&['Use by','Best before'].includes(item.date_type)&&!['Used','Discarded'].includes(item.leftover_status));return <div className="meal-day" key={date}><time dateTime={date}>{i+1}</time>{foods.map(item=><button key={item.id} className="calendar-food" onClick={()=>onEdit(item)}>{item.name}<span className="block text-xs">{foodDateStatus(item).label}</span></button>)}</div>;})}</div></section>;
+}
