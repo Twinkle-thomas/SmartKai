@@ -7,6 +7,23 @@ const mocks = vi.hoisted(() => ({ list: vi.fn(), save: vi.fn(), remove: vi.fn(),
 vi.mock('../src/services/shopping.js', () => ({ createShoppingService: () => mocks }));
 vi.mock('../src/services/pantry.js', () => ({ createPantryService: () => ({ list: mocks.pantry }) }));
 beforeEach(() => { vi.resetAllMocks(); mocks.list.mockResolvedValue([]); mocks.pantry.mockResolvedValue([{ id: 'pantry-1', name: 'Apples', quantity: 2, unit: 'items', location: 'Fruit bowl' }]); });
+
+test('pictured ingredient selection fills editable fields but saves only after confirmation',async()=>{
+ const user=userEvent.setup();render(<ShoppingList client={{}} userId="A"/>);
+ await screen.findByText('No shopping items in this view yet.');
+ await user.clear(screen.getByLabelText('Shopping quantity'));await user.type(screen.getByLabelText('Shopping quantity'),'3');
+ await user.type(screen.getByLabelText('Shopping item name'),'mil');await user.click(screen.getByRole('button',{name:'Choose Milk'}));
+ expect(screen.getByLabelText('Shopping item name')).toHaveValue('Milk');expect(screen.getByLabelText('Shopping category')).toHaveValue('Dairy');expect(screen.getByLabelText('Shopping quantity')).toHaveValue(3);expect(mocks.save).not.toHaveBeenCalled();
+ await user.click(screen.getByRole('button',{name:'Add shopping item',exact:true}));await waitFor(()=>expect(mocks.save).toHaveBeenCalledWith(expect.objectContaining({name:'Milk',quantity:'3',category:'Dairy'}),null));
+});
+
+test('browsing by category retains custom shopping entry and exposes existing-stock hints',async()=>{
+ const user=userEvent.setup();render(<ShoppingList client={{}} userId="A"/>);
+ expect(await screen.findByRole('button',{name:'Choose Apples'})).toHaveTextContent('In pantry');
+ await user.click(screen.getByRole('button',{name:'Browse all 32 ingredients'}));await user.selectOptions(screen.getByLabelText('Browse food category'),'Dairy');
+ expect(screen.getByRole('button',{name:'Choose Yoghurt'})).toBeInTheDocument();expect(screen.queryByRole('button',{name:'Choose Apples'})).not.toBeInTheDocument();
+ await user.type(screen.getByLabelText('Shopping item name'),'Custom oat drink');expect(screen.getByText(/No starter ingredients match/)).toBeInTheDocument();await user.click(screen.getByRole('button',{name:'Add shopping item',exact:true}));await waitFor(()=>expect(mocks.save).toHaveBeenCalledWith(expect.objectContaining({name:'Custom oat drink'}),null));
+});
 test('shopping add/edit, pantry match, purchase/unpurchase, confirmed deletion and reload work', async () => {
   let records = [];
   mocks.list.mockImplementation(async () => records);
