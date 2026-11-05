@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ShoppingIngredientSearch from './ShoppingIngredientSearch.jsx';
+import PantryStockCards from './PantryStockCards.jsx';
 import IngredientArt from './IngredientArt.jsx';
 import {INGREDIENTS} from '../data/ingredients.js';
 import PurchaseTransfer from './PurchaseTransfer.jsx';
@@ -105,11 +106,12 @@ export default function ShoppingList({ client, userId }) {
           {deleting === item.id && <div className="mt-3"><p>Delete {item.name} from your shopping list?</p><button className="secondary mt-2" disabled={busy} onClick={() => mutate(() => service.remove(item.id), 'Shopping item deleted.', editing === item.id)}>Confirm shopping deletion</button> <button className="secondary" disabled={busy} onClick={() => setDeleting(null)}>Keep shopping item</button></div>}
         </li>)}</ul></>}
       </section></div>
-      <section className="panel mb-8"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-2xl font-semibold">Check before you shop</h2><button className="secondary" disabled={stockState === 'loading'} onClick={loadStock}>Refresh pantry view</button></div><p className="mt-3 text-sm">Search your recorded inventory. Name matches are exact apart from spaces and capital letters; different spellings, plurals and brands may not match. Quantities are not converted or subtracted.</p>
-        <label className="food-filter">Search pantry before shopping<input className="rounded-xl border border-stone-300 p-3" type="search" value={search} onChange={(e) => setSearch(e.target.value)} /></label>
+      <section className="panel stock-check-panel mb-8"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="eyebrow mb-2">A quick look at what’s at home</p><h2 className="text-2xl font-semibold">Check before you shop</h2></div><button className="secondary" disabled={stockState === 'loading'} onClick={loadStock}>Refresh pantry view</button></div><p className="mt-3 text-sm">See your recorded food, quantities and storage locations before adding more to your list.</p>
+        <label className="food-filter stock-check-search">Search pantry before shopping<input placeholder="Find food in your pantry…" type="search" value={search} onChange={(e) => setSearch(e.target.value)} /></label>
         {stockState === 'loading' && <p role="status" className="mt-3">Loading pantry for shopping…</p>}
         {stockState === 'error' && <p role="alert" className="mt-3">Could not load pantry. This does not mean an item is out of stock. Refresh or check your pantry directly.</p>}
-        {stockState === 'ready' && <><p className="mt-3 text-xs">Up to 500 recorded pantry items. These records may need updating.</p>{!stockShown.length ? <p className="mt-3">No matching pantry records in this view.</p> : <ul className="food-item-list">{stockShown.map((item) => <li key={item.id}><strong>{item.name}</strong> · {item.quantity} {item.unit} · {item.location}{item.use_first ? ' · Use first' : ''}</li>)}</ul>}</>}
+        {stockState === 'ready' && <><p className="stock-check-count">{stockShown.length} {stockShown.length===1?'entry':'entries'} {search.trim()?'matching your search':'recorded in your pantry'} · up to 500 displayed</p>{!stockShown.length ? <p className="mt-3">No matching pantry records in this view.</p> : <PantryStockCards items={stockShown}/>}</>}
+        <details className="stock-check-about"><summary>About pantry checks</summary><p>These records may need updating. Name matches are exact apart from spaces and capital letters; different spellings, plurals and brands may not match. Quantities are not converted or subtracted, and a record does not establish food safety.</p></details>
         <a className="text-link mt-4" href="#/pantry">Update pantry inventory ↗</a>
       </section>
     </>}

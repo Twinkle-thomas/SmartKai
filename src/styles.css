@@ -11,6 +11,26 @@
   ::selection { background: #c4e3b8; color: var(--forest); }
 }
 @layer components {
+  .panel.stock-check-panel { background: #f5f7ef; border-color: #dce4d4; }
+  .stock-check-search input { width: 100%; min-width: 0; padding: 13px 16px; background: #fffefa; border: 1px solid #b9c7ad; border-radius: 13px; }
+  .stock-check-count { margin: 17px 0; font-size: 12px; color: #58674f; }
+  .pantry-stock-grid { list-style: none; display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,285px),1fr)); gap: 16px; }
+  .pantry-stock-card { min-width: 0; padding: 22px; background: #fffefa; border: 1px solid #dce4d4; border-radius: 20px; }
+  .pantry-stock-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pantry-stock-top > div { min-width: 0; flex: 1; }
+  .pantry-stock-art { display: grid; place-items: center; width: 62px; height: 62px; background: #edf3e4; border-radius: 16px; flex-shrink: 0; }
+  .pantry-stock-art svg { width: 55px; height: 55px; }
+  .pantry-stock-top h3 { margin-top: 5px; font-size: 21px; font-weight: 650; letter-spacing: -.02em; color: var(--forest); overflow-wrap: anywhere; }
+  .pantry-stock-top .eyebrow { font-size: 9px; }
+  .pantry-stock-priority { padding: 5px 9px; border-radius: 999px; background: #e4edcf; color: #365329; font-size: 10px; font-weight: 700; }
+  .pantry-stock-details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-top: 1px solid #e6ebdf; margin-top: 19px; padding-top: 16px; }
+  .pantry-stock-details dt { font-size: 10px; color: #58674f; margin-bottom: 7px; }
+  .pantry-stock-details dd { font-size: 19px; font-weight: 650; color: var(--forest); overflow-wrap: anywhere; }
+  .pantry-stock-details dd > span { font-size: 13px; font-weight: 400; }
+  .pantry-stock-details .pantry-stock-location { font-size: 14px; }
+  .stock-check-about { margin-top: 20px; max-width: 760px; color: #58674f; font-size: 12px; line-height: 1.7; }
+  .stock-check-about summary { cursor: pointer; font-weight: 600; }
+  .stock-check-about p { margin-top: 8px; }
   .shopping-ingredient-search { min-width: 0; }
   .shopping-ingredient-search > label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
   .shopping-search-field { position: relative; }
