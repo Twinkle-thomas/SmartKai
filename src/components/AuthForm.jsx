@@ -61,6 +61,7 @@ export default function AuthForm({ client, mode = 'login', onAuthenticated }) {
     {registering && <><p id="password-guidance" className="auth-small">Use at least 8 characters. Choose a unique password.</p><label>Confirm password<input ref={confirmInput} type={showPassword ? 'text' : 'password'} autoComplete="new-password" minLength={8} value={confirmation} onChange={(event) => setConfirmation(event.target.value)} required disabled={busy || !client} /></label></>}
     {error && <p role="alert" className="auth-error">{error}</p>}
     <button className="primary" type="submit" disabled={busy || !client}>{busy ? registering ? 'Creating account…' : 'Signing in…' : registering ? 'Create account' : 'Sign in'}</button>
+    {!registering && <a className="text-link" href="#/forgot-password">Forgot password?</a>}
     <p className="auth-switch">{registering ? 'Already have an account? ' : 'New to SmartKai? '}<a href={registering ? '#/login' : '#/register'}>{registering ? 'Sign in' : 'Create an account'}</a></p>
   </form>;
 }

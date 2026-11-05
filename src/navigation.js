@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 
 export function readRoute(hash = window.location.hash) {
+  if(hash === '#/forgot-password')return 'forgot-password';
+  const callbackParams=new URLSearchParams(hash.slice(1));
+  if(hash === '#/reset-password' || ((['','#','#/'].includes(hash)||callbackParams.has('access_token')||callbackParams.has('error')) && new URLSearchParams(window.location.search).get('auth')==='recovery'))return 'reset-password';
   if(hash.startsWith('#/storage?'))return 'storage';
   const tools = { '#/tools':'tools', '#/expiry':'expiry', '#/leftovers':'leftovers', '#/storage':'storage', '#/barcode':'barcode', '#/sharing':'sharing' };
   if (tools[hash]) return tools[hash];
