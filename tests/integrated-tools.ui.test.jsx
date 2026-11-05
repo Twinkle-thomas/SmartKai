@@ -66,7 +66,7 @@ test('a shopping entry transferred earlier cannot be transferred again after its
 });
 test('dashboard explains relevant profile actions while retaining access to every tool',()=>{
  render(<Dashboard result={{profiles:['Overbuyer','Storage Learner']}}/>);
- expect(screen.getByRole('link',{name:/Check stock before shopping/})).toHaveAttribute('href','#/shopping');expect(screen.getByText(/Overbuyer: Your answers/)).toBeInTheDocument();expect(screen.getByRole('link',{name:'Explore all tools'})).toHaveAttribute('href','#/tools');
+ expect(screen.getByRole('link',{name:/Check stock before shopping/})).toHaveAttribute('href','#/shopping');expect(screen.getByText('Your answers suggest frequent extra buying. Compare the list with pantry stock first.')).toBeInTheDocument();expect(screen.getByText('Overbuyer',{exact:true})).toBeInTheDocument();expect(screen.getByRole('link',{name:'Explore all tools'})).toHaveAttribute('href','#/tools');
 });
 test('food storage has searchable categories and a food detail route with source attribution',async()=>{
  const user=userEvent.setup(),view=render(<FoodStorageLibrary/>);await user.type(screen.getByLabelText('Find a food in the storage library'),'carrot');

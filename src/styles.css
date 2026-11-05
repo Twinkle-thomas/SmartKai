@@ -11,6 +11,31 @@
   ::selection { background: #c4e3b8; color: var(--forest); }
 }
 @layer components {
+  .panel.suggested-actions { background: #f4f6ed; border-color: #dbe3d2; }
+  .suggested-actions-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+  .suggested-actions-heading h2 { max-width: 590px; margin-top: 10px; font-size: clamp(25px, 2.7vw, 34px); font-weight: 650; letter-spacing: -.035em; line-height: 1.15; color: var(--forest); }
+  .suggested-actions-heading > p { max-width: 235px; font-size: 14px; line-height: 1.65; color: #566252; }
+  .suggested-action-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 20px; list-style: none; padding: 0; }
+  .suggested-action-grid > li { min-width: 0; display: flex; }
+  .suggested-action-card { display: flex; flex-direction: column; width: 100%; overflow: hidden; border: 1px solid #d7dfcf; border-radius: 21px; background: #fffefa; color: var(--ink); text-decoration: none; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+  .suggested-action-card:focus-visible { outline: 3px solid #a86512; outline-offset: 4px; }
+  .suggested-action-photo { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #e3e9db; }
+  .suggested-action-photo::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent,rgba(15,40,27,.28)); pointer-events: none; }
+  .suggested-action-photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .45s ease; }
+  .suggested-profile { position: absolute; z-index: 1; bottom: 16px; left: 16px; max-width: calc(100% - 32px); padding: 7px 12px; border: 1px solid #e1e7d8; border-radius: 999px; background: #faf8f2; color: var(--forest); font-size: 11px; font-weight: 700; letter-spacing: .025em; }
+  .suggested-action-content { display: flex; flex-direction: column; flex: 1; padding: 23px; }
+  .suggested-action-content h3 { font-size: clamp(21px,2vw,25px); font-weight: 650; line-height: 1.2; letter-spacing: -.025em; margin: 12px 0; color: var(--forest); }
+  .suggested-action-description { font-size: 14px; line-height: 1.7; color: #566252; margin-bottom: 23px; }
+  .suggested-action-cta { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-top: auto; padding-top: 15px; border-top: 1px solid #e4e9df; font-size: 12px; font-weight: 700; color: var(--forest); }
+  .suggested-action-arrow { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #e7efdf; font-size: 17px; transition: background .22s, color .22s; flex-shrink: 0; }
+  .suggested-actions-note { display: flex; align-items: center; gap: 9px; margin-top: 22px; color: #566252; font-size: 12px; line-height: 1.6; }
+  .suggested-actions-note > span { font-size: 21px; color: #527249; }
+  .suggested-actions-empty { padding: 20px 0; line-height: 1.7; }
+  .suggested-actions-empty a { margin-top: 12px; }
+  @media(hover:hover) { .suggested-action-card:hover { transform: translateY(-4px); border-color: #9caf92; box-shadow: 0 12px 28px #153f3210; } .suggested-action-card:hover img { transform: scale(1.035); } .suggested-action-card:hover .suggested-action-arrow { background: var(--forest); color: #fff; } }
+  @media(min-width:1000px) { .suggested-action-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } .suggested-action-grid:has(>li:only-child) { grid-template-columns: minmax(0,1fr); max-width: 460px; } .suggested-action-grid:has(>li:nth-child(2):last-child) { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media(max-width:639px) { .suggested-actions-heading { display: block; } .suggested-actions-heading > p { max-width: none; margin-top: 12px; } .suggested-action-content { padding: 20px; } .suggested-action-grid { gap: 18px; } }
+  @media(prefers-reduced-motion:reduce) { .suggested-action-card,.suggested-action-photo img,.suggested-action-arrow { transition: none; } .suggested-action-card:hover,.suggested-action-card:hover img { transform: none; } }
   .panel { @apply rounded-[28px] border border-stone-200 bg-white p-5 sm:p-8; }
   .eyebrow { @apply text-[11px] font-bold uppercase tracking-[.15em]; color: var(--forest); }
   .frequency { @apply relative cursor-pointer; }
