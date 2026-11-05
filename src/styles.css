@@ -701,3 +701,6 @@
 }
 
 .expiry-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.35rem}.expiry-calendar .meal-day{padding:.5rem;min-height:5rem;min-width:0}.calendar-food{display:block;text-align:left;width:100%;overflow-wrap:anywhere;border-radius:.5rem;background:#e2ecd8;padding:.4rem;margin-top:.35rem;font-size:.85rem;color:#243b2b}.calendar-food:focus-visible{outline:3px solid #365d3b;outline-offset:2px}@media(max-width:600px){.expiry-calendar{font-size:.75rem;gap:.15rem}.expiry-calendar .meal-day{padding:.2rem}.calendar-food{padding:.2rem;font-size:.65rem}}
+
+/* Keep account access visible at phone widths. */
+@media(max-width:760px){.header-inner{flex-wrap:wrap;gap:12px}.header-inner nav{flex-wrap:wrap;justify-content:flex-end;max-width:100%;gap:8px;margin-left:auto}.header-inner nav > a.nav-register{display:inline-flex;padding:10px 13px;white-space:nowrap}.header-inner nav > a.nav-account{display:inline-flex}.header-inner nav > a.desktop-nav{display:none}.header-inner nav .nav-logout{padding:9px 11px}}

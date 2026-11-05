@@ -18,12 +18,11 @@ export function SiteHeader({ route, signedIn = false, ready = true, client }) {
       setError('Could not log out. Please try again.');
     } finally { setBusy(false); }
   }
-  const inWorkspace = ['dashboard', 'personalisation', 'account', 'pantry', 'progress', 'reminders', 'shopping', 'meals', 'tools', 'expiry', 'leftovers', 'storage', 'barcode', 'sharing'].includes(route);
   return <header className="site-header"><div className="page-width header-inner"><Brand />
     <nav aria-label="Main navigation">
       <a href="#features" className="desktop-nav">The SmartKai way</a>
       {!signedIn && <a href="#/dashboard" aria-current={route === 'dashboard' ? 'page' : undefined}>Dashboard</a>}
-      <a href={signedIn || inWorkspace ? '#/account' : '#/login'} className="nav-account" aria-current={['account', 'login'].includes(route) ? 'page' : undefined}>{signedIn || inWorkspace ? 'Your account' : 'Sign in'} <span aria-hidden="true">↗</span></a>
+      <a href={signedIn ? '#/account' : '#/login'} className="nav-account" aria-current={['account', 'login'].includes(route) ? 'page' : undefined}>{signedIn ? 'Your account' : 'Sign in'} <span aria-hidden="true">↗</span></a>
       {ready && <a href={signedIn ? '#/dashboard' : '#/register'} className="nav-register" aria-current={route === 'register' ? 'page' : undefined}>{signedIn ? 'Go to dashboard' : 'Get started'}</a>}
       {signedIn && <button type="button" className="nav-logout" onClick={logout} disabled={busy}>{busy ? 'Logging out…' : 'Log out'}</button>}
     </nav>

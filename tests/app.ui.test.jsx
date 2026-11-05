@@ -8,6 +8,10 @@ beforeEach(() => window.history.replaceState(null, '', '/#/personalisation'));
 test('requires all answers before displaying results', async () => {
   const user = userEvent.setup(); render(<App />);
   await user.click(screen.getByRole('button', { name: /View household guidance/ }));
+  expect(screen.getByRole('alert')).toHaveTextContent('Please answer all five questions');
+  expect(screen.getByRole('alert')).toHaveTextContent('5 questions need an answer');
+  await user.click(within(screen.getByRole('alert')).getAllByRole('button')[0]);
+  expect(screen.getAllByRole('radio')[0]).toHaveFocus();
   expect(screen.queryByRole('heading', { name: 'Household results' })).not.toBeInTheDocument();
   expect(screen.getAllByRole('radio').every((radio) => radio.required)).toBe(true);
 });

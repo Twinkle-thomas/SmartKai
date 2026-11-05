@@ -61,6 +61,16 @@ test('disabled registration is explained and password fields clear after failure
   expect(screen.getByRole('button', { name: 'Create account' })).toBeEnabled();
 });
 
+test.each([
+  ['email_address_invalid','valid email address'],
+  ['email_address_not_authorized','designated demonstration email'],
+  ['invalid_credentials','Forgot password'],
+])('authentication error %s gives a safe next step',async(code,message)=>{
+  const client=authClient();client.auth.signUp.mockResolvedValue({error:{code,message:'Internal account and server details must not be displayed'}});
+  const user=userEvent.setup();render(<AuthForm client={client} mode="register"/>);await registrationFields(user);await user.click(screen.getByRole('button',{name:'Create account'}));
+  expect(await screen.findByRole('alert')).toHaveTextContent(message);expect(screen.queryByText(/Internal account and server/)).not.toBeInTheDocument();
+});
+
 test('auto-confirmed registration continues to personalisation without pretending email was sent', async () => {
   const client = authClient(); client.auth.signUp.mockResolvedValue({ data: { session: mockSession }, error: null });
   const completed = vi.fn(); const user = userEvent.setup();
