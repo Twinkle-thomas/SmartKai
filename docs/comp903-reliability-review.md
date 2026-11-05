@@ -52,7 +52,11 @@ Use only recognisable synthetic entries prefixed `COMP903 QA` and record expecte
 
 Application fixes were pushed as commit `777a678`; Vercel deployment `smartkai-etq5lsibw-twinklethomas-projects.vercel.app` reached Ready and was promoted to `https://smartkai.vercel.app`. Later ledger/report updates do not imply a completed authenticated test.
 
-The authenticated browser ledger was exercised against that production release. Follow-up changes are limited to safe error wording and the account/results/homepage copy listed below; no schema or workflow logic changed. Follow-up production deployment status will be appended after verification.
+The authenticated browser ledger was exercised against that production release. Follow-up changes are limited to safe error wording and the account/results/homepage copy listed below; no schema or workflow logic changed. Commit `74c9158` deployed as `smartkai-5gn2zauna-twinklethomas-projects.vercel.app` (Ready, 12:32 NZDT) with canonical alias `smartkai.vercel.app`. A full live refresh verified the corrected signed-in account introduction and retained saved history; a fresh homepage tab verified both updated paragraphs.
+
+### Scope remaining
+
+The tested essential paths are usable in the deployed application; this is not an exhaustive certification of every feature. Whole-entry disposal/freeze, confirmed meal consumption, receipt OCR, image recognition, barcode services, reminders delivery and sharing were outside this live pass. Two separate authenticated browser accounts were not used for isolation testing; hosted role and anonymous API checks above provide narrower evidence. External-recipient email delivery and OS-level reduced-motion remain unverified. The QA records are retained for demonstration, except the explicitly authorised milk deletion. Dates in the examples are fixed to 6 November 2026; their relative labels change with the NZ calendar.
 
 ### Follow-up UX findings and fixes
 
