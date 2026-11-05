@@ -23,7 +23,7 @@ export default function LandingHero() {
     <div className="hero-copy">
       <p className="eyebrow hero-eyebrow"><span className="status-dot" /> A little care goes a long way</p>
       <h1 id="hero-title">Less Food Waste.<br /><span>More Food Saved.</span></h1>
-      <p className="hero-description">Good food deserves a little thought. Discover your household’s food habits and get personalised guidance, with a new generation of food-management tools on the way.</p>
+      <p className="hero-description">Good food deserves a little thought. Discover your household’s food habits, get personalised guidance and organise your pantry, shopping and meals in one place.</p>
       <div className="hero-actions"><a href="#/dashboard" className="primary">Explore SmartKai <span aria-hidden="true">↗</span></a><a href="#/personalisation" className="secondary hero-recommendations">Get Personalised Recommendations <span aria-hidden="true">↗</span></a></div>
       <p className="hero-caption">Thoughtfully made for life in Aotearoa New Zealand.</p>
     </div>

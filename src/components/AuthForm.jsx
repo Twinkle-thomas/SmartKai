@@ -7,7 +7,8 @@ export function confirmationRedirect(location = window.location) {
 }
 
 function friendlyError(mode, error) {
-  if (error?.code === 'email_address_invalid' || error?.code === 'validation_failed') return 'Enter a valid email address that can receive verification messages. Reserved example or test addresses may not be accepted.';
+  if (error?.code === 'email_address_invalid') return 'Enter a valid email address that can receive verification messages. Reserved example or test addresses may not be accepted.';
+  if (error?.code === 'validation_failed') return 'Check your email and password meet the form requirements, then try again.';
   if (error?.code === 'invalid_credentials') return 'Email or password not recognised. Check your SmartKai credentials or choose Forgot password.';
   if (error?.code === 'signup_disabled') return 'Registration is not open yet. You can still sign in with an existing account.';
   if (error?.code === 'over_email_send_rate_limit' || error?.status === 429) return 'Too many attempts. Please wait a little before trying again.';

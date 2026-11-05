@@ -60,5 +60,5 @@ function StickyFeatureStory() {
 export default function FeatureShowcase() {
   const enabled = useHomepageMotion();
   const pinLayout = usePinLayout();
-  return <div id="features"><Reveal className="product-intro"><p className="eyebrow">The SmartKai way</p><h2>More thought.<br /><span>For every part of food at home.</span></h2><p>Guidance and practical food-management tools you can use today.<br />More household tools taking shape for tomorrow.</p></Reveal>{enabled && pinLayout ? <StickyFeatureStory /> : <div className="feature-stack">{FEATURES.map((feature, index) => <FeatureSection key={feature.id} feature={feature} index={index} />)}</div>}</div>;
+  return <div id="features"><Reveal className="product-intro"><p className="eyebrow">The SmartKai way</p><h2>More thought.<br /><span>For every part of food at home.</span></h2><p>Guidance and practical food-management tools you can use today.<br />Keep track of food, plan your week and return to your saved guidance.</p></Reveal>{enabled && pinLayout ? <StickyFeatureStory /> : <div className="feature-stack">{FEATURES.map((feature, index) => <FeatureSection key={feature.id} feature={feature} index={index} />)}</div>}</div>;
 }

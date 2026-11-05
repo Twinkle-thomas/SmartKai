@@ -13,7 +13,7 @@ const Results = forwardRef(function Results({ result }, ref) {
       <p className="mt-6 text-sm">Save this assessment as your starting point, use your tools, then <a className="underline" href="#/progress">revisit your habits after 30 days</a>.</p>
       <p className="mt-3 text-sm"><a className="underline" href="#/reminders">Choose a day and time for your weekly reminders</a> to fit these actions into your routine.</p>
       {!!result.explanations.length && <details className="mt-6 rounded-xl bg-stone-50 p-4"><summary className="cursor-pointer font-medium">About this guidance</summary><ul className="mt-3 space-y-2 text-sm">{result.explanations.map(({ profile }) => <li key={profile}>{profile}: you selected Often for the related food-management practice.</li>)}</ul></details>}
-      <p className="mt-6 text-xs text-stone-500">To keep a copy of your guidance, sign in and choose Save assessment below.</p>
+      <p className="mt-6 text-xs text-stone-500">Choose Save assessment in the account section below to keep your guidance. Saving requires a signed-in account.</p>
     </>}
   </section>;
 });

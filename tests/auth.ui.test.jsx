@@ -63,6 +63,7 @@ test('disabled registration is explained and password fields clear after failure
 
 test.each([
   ['email_address_invalid','valid email address'],
+  ['validation_failed','email and password meet the form requirements'],
   ['email_address_not_authorized','designated demonstration email'],
   ['invalid_credentials','Forgot password'],
 ])('authentication error %s gives a safe next step',async(code,message)=>{

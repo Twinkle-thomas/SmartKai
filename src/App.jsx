@@ -70,7 +70,7 @@ function SmartKai({ client }) {
       {route === 'progress' && <Progress key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} />}
       {route === 'shopping' && <Suspense fallback={<p role="status">Loading shopping tools…</p>}><ShoppingList key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} /></Suspense>}
       {route === 'meals' && <Suspense fallback={<p role="status">Loading meal planner…</p>}><MealPlanner key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} /></Suspense>}
-      {route === 'account' && <div className="workspace-intro"><p className="eyebrow">Your household / Your account</p><h1>A place to come back to.</h1><p>Sign in to save your assessments and revisit your guidance.</p><a href="#/personalisation" className="text-link">Start a household assessment ↗</a></div>}
+      {route === 'account' && <div className="workspace-intro"><p className="eyebrow">Your household / Your account</p><h1>A place to come back to.</h1><p>{session ? 'Revisit your saved assessments and household guidance.' : 'Sign in to save your assessments and revisit your guidance.'}</p><a href="#/personalisation" className="text-link">Start a household assessment ↗</a></div>}
       {route === 'personalisation' && <>
       <div id="assessment" className="section-intro"><div><p className="eyebrow">A moment to reflect</p><h1>Every household has habits.<br /><span>Get to know yours.</span></h1></div><p>Five questions. A fresh perspective.<br />Guidance shaped by your answers.</p></div>
       <div className="grid items-start gap-6 lg:grid-cols-[1.3fr_1fr]">
