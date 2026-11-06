@@ -54,3 +54,18 @@ The service paginates in 500-row pages rather than silently using a server-limit
 - Full regression: 185 passed (20 Node/domain/database + 165 Vitest tests across 32 files). Production build passed. Automated DB isolation uses a local Postgres-compatible test environment, not two independently signed-in browser accounts.
 
 Sources consulted: [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Supabase changelog](https://supabase.com/changelog). This increment uses no new package dependencies.
+
+## Production browser checks — 7 November 2026, NZ time
+
+Application commit `15e8920` deployed Ready at `smartkai-nt6flwfpw-twinklethomas-projects.vercel.app`, aliased to `https://smartkai.vercel.app`. The existing authorised demonstration browser session restored successfully. These checks used normal application controls and new recognisable fictional QA records; existing records were left intact.
+
+| Check | Expected | Observed | Result |
+| --- | --- | --- | --- |
+| Standalone log | 250g recorded once as 0.25kg | `COMP903 QA Waste Apple` saved with date7 November, Fruit, reason/notes and one history entry; weekly trend0.25kg | PASS |
+| Linked leftover discard | 200g removed from1000g, one history entry | New `COMP903 QA Waste Soup` created at1000g; Leftover Manager discard left800g; shared dashboard adds one200g/0.2kg event | PASS |
+| Preservation | Existing pantry records unchanged | Previously present10 items remain alongside the new stock; Rice400g, Soup2portions and Apples4items retained | PASS for observed records |
+| Refresh / baseline |800g stock, two logs and baseline retained | Leftover refresh retained800g; returning to dashboard loaded two events totalling0.45kg and saved baseline26 October | PASS |
+| Partial-week guard | No percentage for incomplete comparison week | Selecting2 November shows “Compare completed seven-day periods only” | PASS |
+| Simulated cases | Decreased−50%, increased+50%, unchanged0%; no account writes | All three selectors showed expected recorded-mass messages and explicit simulated labels | PASS |
+
+Evidence: local screenshots `.vercel/qa-waste-trend.png` (weekly table and category/reason breakdown). QA stock/history remain for repeatable demonstrations. Uncertain-response retries, concurrent operations and two-account RLS were covered by automated tests, not induced against production in this browser run. New-login persistence of this feature still needs a logout/sign-in pass; full-page refresh is the observed persistence check here.
