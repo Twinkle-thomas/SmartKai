@@ -19,6 +19,7 @@ const MealPlanner = lazy(() => import('./components/MealPlanner.jsx'));
 const StorageGuide = lazy(() => import('./components/StorageGuide.jsx'));
 const SharingSimulation = lazy(() => import('./components/SharingSimulation.jsx'));
 const ToolDirectory = lazy(() => import('./components/ToolDirectory.jsx'));
+const WasteDashboard = lazy(() => import('./components/WasteDashboard.jsx'));
 export default function App({ client = null }) {
   return <AccountSession client={client}><SmartKai client={client} /></AccountSession>;
 }
@@ -31,7 +32,7 @@ function SmartKai({ client }) {
   const resultHeading = useRef(null);
   const main = useRef(null);
   useEffect(() => {
-    const titles = {tools:'Your tools', expiry:'Food dates', leftovers:'Leftover manager', storage:'Storage guide', barcode:'Barcode scanner', sharing:'Sharing simulation', meals:'Your meal planner', shopping:'Your shopping list', reminders:'Your reminders', pantry:'Your pantry', progress:'Your monthly check-in', personalisation:'Your personalised guidance', account:'Your account', dashboard:'Your dashboard', register:'Create your account', login:'Sign in', 'forgot-password':'Reset password', 'reset-password':'Choose a new password'};
+    const titles = {waste:'Recorded food waste',tools:'Your tools', expiry:'Food dates', leftovers:'Leftover manager', storage:'Storage guide', barcode:'Barcode scanner', sharing:'Sharing simulation', meals:'Your meal planner', shopping:'Your shopping list', reminders:'Your reminders', pantry:'Your pantry', progress:'Your monthly check-in', personalisation:'Your personalised guidance', account:'Your account', dashboard:'Your dashboard', register:'Create your account', login:'Sign in', 'forgot-password':'Reset password', 'reset-password':'Choose a new password'};
     document.title = route === 'home' ? 'SmartKai | Less Food Waste. More Food Saved.' : `SmartKai | ${titles[route] ?? 'Page not found'}`;
     main.current?.focus({ preventScroll: true });
     const anchor = route === 'home' && ['#features', '#how-it-works'].includes(window.location.hash) ? document.getElementById(window.location.hash.slice(1)) : document.getElementById('root');
@@ -59,7 +60,7 @@ function SmartKai({ client }) {
     <SiteHeader route={route} signedIn={!!session} ready={ready} client={client} />
     <main id="main" ref={main} tabIndex={-1} className={`page-width ${route === 'home' ? 'homepage' : 'application-page'}`}>
       {route === 'home' ? <Suspense fallback={<p role="status" className="workspace-intro">Loading SmartKai…</p>}><HomePage /></Suspense> : route === 'not-found' ? <section className="workspace-intro"><p className="eyebrow">A little off track</p><h1>Let’s find your way back.</h1><p>This page isn’t available.</p><a className="primary mt-6" href="#/">Back to SmartKai</a></section> : ['login', 'register','forgot-password','reset-password'].includes(route) ? <AuthPage client={client} mode={route} /> : <>
-      <nav className="workspace-nav" aria-label="Application navigation"><a href="#/dashboard" aria-current={route === 'dashboard' ? 'page' : undefined}>Overview</a><a href="#/personalisation" aria-current={route === 'personalisation' ? 'page' : undefined}>Your guidance</a><a href="#/pantry" aria-current={route === 'pantry' ? 'page' : undefined}>Pantry</a><a href="#/meals" aria-current={route === 'meals' ? 'page' : undefined}>Meal planner</a><a href="#/shopping" aria-current={route === 'shopping' ? 'page' : undefined}>Shopping list</a><a href="#/tools" aria-current={route === 'tools' ? 'page' : undefined}>All tools</a><a href="#/progress" aria-current={route === 'progress' ? 'page' : undefined}>Monthly check-in</a><a href="#/reminders" aria-current={route === 'reminders' ? 'page' : undefined}>Reminders</a><a href="#/account" aria-current={route === 'account' ? 'page' : undefined}>Account & history</a></nav>
+      <nav className="workspace-nav" aria-label="Application navigation"><a href="#/dashboard" aria-current={route === 'dashboard' ? 'page' : undefined}>Overview</a><a href="#/personalisation" aria-current={route === 'personalisation' ? 'page' : undefined}>Your guidance</a><a href="#/pantry" aria-current={route === 'pantry' ? 'page' : undefined}>Pantry</a><a href="#/meals" aria-current={route === 'meals' ? 'page' : undefined}>Meal planner</a><a href="#/shopping" aria-current={route === 'shopping' ? 'page' : undefined}>Shopping list</a><a href="#/waste" aria-current={route === 'waste' ? 'page' : undefined}>Food waste</a><a href="#/tools" aria-current={route === 'tools' ? 'page' : undefined}>All tools</a><a href="#/progress" aria-current={route === 'progress' ? 'page' : undefined}>Monthly check-in</a><a href="#/reminders" aria-current={route === 'reminders' ? 'page' : undefined}>Reminders</a><a href="#/account" aria-current={route === 'account' ? 'page' : undefined}>Account & history</a></nav>
       <Suspense fallback={null}><ReminderCenter key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} route={route} /></Suspense>
       {route === 'dashboard' && <Dashboard key={session?.user.id ?? 'guest'} result={result} client={client} signedIn={!!session} />}
       {route === 'pantry' && <Suspense fallback={<p role="status">Loading pantry tools…</p>}><Pantry key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} initialFilter={hash === '#/pantry/use-first' ? 'Use first' : hash === '#/pantry/leftovers' ? 'Leftovers' : 'All items'} /></Suspense>}
@@ -68,6 +69,7 @@ function SmartKai({ client }) {
       {route === 'storage' && <Suspense fallback={<p role="status">Loading storage guide…</p>}><StorageGuide key={hash} /></Suspense>}
       {route === 'sharing' && <Suspense fallback={<p role="status">Loading sharing simulation…</p>}><SharingSimulation key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} /></Suspense>}
       {route === 'progress' && <Progress key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} />}
+      {route === 'waste' && <Suspense fallback={<p role="status">Loading recorded waste…</p>}><WasteDashboard key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} /></Suspense>}
       {route === 'shopping' && <Suspense fallback={<p role="status">Loading shopping tools…</p>}><ShoppingList key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} /></Suspense>}
       {route === 'meals' && <Suspense fallback={<p role="status">Loading meal planner…</p>}><MealPlanner key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} /></Suspense>}
       {route === 'account' && <div className="workspace-intro"><p className="eyebrow">Your household / Your account</p><h1>A place to come back to.</h1><p>{session ? 'Revisit your saved assessments and household guidance.' : 'Sign in to save your assessments and revisit your guidance.'}</p><a href="#/personalisation" className="text-link">Start a household assessment ↗</a></div>}
@@ -82,7 +84,7 @@ function SmartKai({ client }) {
         <div id="guidance" className="space-y-6"><Results result={result} ref={resultHeading} /></div>
       </div>
       </>}
-      {!['pantry','progress','reminders','shopping','meals','expiry','leftovers','barcode','storage','sharing','tools'].includes(route) && <EvaluatorStorage client={client} assessment={result} />}
+      {!['waste','pantry','progress','reminders','shopping','meals','expiry','leftovers','barcode','storage','sharing','tools'].includes(route) && <EvaluatorStorage client={client} assessment={result} />}
       </>}
     </main>
     <SiteFooter />

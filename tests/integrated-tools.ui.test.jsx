@@ -39,7 +39,7 @@ test('disposal requires an explanation and records a partial quantity',async()=>
  await user.click(screen.getByRole('button',{name:'Record consumption or disposal'}));await user.selectOptions(screen.getByLabelText('Outcome'),'Discarded');
  await user.click(screen.getByRole('button',{name:'Confirm outcome'}));expect(client.rpc).not.toHaveBeenCalled();
  await user.type(screen.getByLabelText('Disposal reason'),'Damaged packaging');await user.clear(screen.getByLabelText('Amount in bags'));await user.type(screen.getByLabelText('Amount in bags'),'0.5');
- await user.click(screen.getByRole('button',{name:'Confirm outcome'}));await waitFor(()=>expect(client.rpc).toHaveBeenCalledWith('record_food_outcome',{p_id:'rice',p_quantity:0.5,p_outcome:'Discarded',p_reason:'Damaged packaging'}));
+ await user.click(screen.getByRole('button',{name:'Confirm outcome'}));await waitFor(()=>expect(client.rpc).toHaveBeenCalledWith('record_waste_discard',expect.objectContaining({p_request:expect.any(String),p_food:'rice',p_quantity:0.5,p_name:'Rice',p_category:'Grains',p_unit:'bags',p_reason:'Damaged packaging'})));
 });
 test('expiry calendar links a recorded date to the editable food entry',async()=>{
  const user=userEvent.setup(),edit=vi.fn();render(<ExpiryCalendar items={[food]} onEdit={edit}/>);

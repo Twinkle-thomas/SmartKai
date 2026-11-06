@@ -11,6 +11,7 @@ export function readRoute(hash = window.location.hash) {
   if (hash === '#/shopping') return 'shopping';
   if (['#/pantry', '#/pantry/use-first', '#/pantry/leftovers'].includes(hash)) return 'pantry';
   if (hash === '#/progress') return 'progress';
+  if (hash === '#/waste') return 'waste';
   if (hash === '#/reminders') return 'reminders';
   if (hash === '#/register') return 'register';
   if (hash === '#/login' || /^#(?:access_token|error)=/.test(hash)

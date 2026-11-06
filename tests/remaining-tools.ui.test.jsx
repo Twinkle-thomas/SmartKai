@@ -101,8 +101,8 @@ test('sharing failures do not fabricate successful actions and signed-out access
   expect(screen.getByRole('link',{name:'Sign in to simulate sharing'})).toHaveAttribute('href','#/login');
   expect(mocks.sharing).not.toHaveBeenCalled();
 });
-test('all nine advertised tool links resolve to implemented routes',()=>{
+test('all ten advertised tool links resolve to implemented routes',()=>{
   render(<ToolDirectory/>);
-  const links=screen.getAllByRole('link',{name:/^Open /});expect(links).toHaveLength(9);
+  const links=screen.getAllByRole('link',{name:/^Open /});expect(links).toHaveLength(10);
   for(const link of links)expect(readRoute(link.getAttribute('href'))).not.toBe('not-found');
 });

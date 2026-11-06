@@ -1,4 +1,5 @@
 export const HOUSEHOLD_TOOLS=[
+  {href:'#/waste',name:'Food Waste Tracking',text:'Record discarded food and compare recorded mass across explicit weeks. Unmeasured quantities stay separate.'},
   {href:'#/pantry',name:'Pantry Manager',text:'Add, categorise and organise saved food, quantities and locations.'},
   {href:'#/expiry',name:'Food-date Tracker',text:'Review use-by and best-before dates, with configurable approaching-date views.'},
   {href:'#/shopping',name:'Smart Shopping List',text:'Plan quantities, compare recorded stock and tick purchases.'},
