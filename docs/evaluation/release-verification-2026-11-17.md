@@ -1,0 +1,8 @@
+# SmartKai release verification, 17 November 2026
+
+- Application revision `bee0e9e` was pushed to `main`. The production site displayed the new sidebar at a 1280px viewport, three dashboard shortcuts and the collapsible menu at the narrower browser viewport. The narrow viewport menu opened Pantry and closed after navigation.
+- Local verification reported 187 passing automated tests and a successful production build. The regression covers negative quantity feedback in the Pantry Add and Edit forms. All eight fictional assessment scenarios passed.
+- The hosted Supabase project was inactive at the start of the check. Restoration was requested and the project subsequently reported `ACTIVE_HEALTHY`. Read-only catalog queries resumed successfully.
+- Migration `20261117060215` removed redundant whole-table grants on `inventory_events` and `waste_baselines` and revoked client execution of the automatic RLS event-trigger function. Catalog checks confirmed authenticated TRUNCATE was removed, RLS stayed enabled, inventory history kept SELECT/INSERT, baseline kept SELECT/INSERT/UPDATE and the authenticated assessment-save RPC remained callable.
+- The hosted ledger holds the food-waste migration and the new grants migration. Seven earlier repository migrations are absent from the ledger. Existing schema objects were observed, so replay or ledger repair would first require a migration-by-migration comparison in a separate environment.
+- Live two-account isolation, waste-history and baseline persistence after a fresh login, and physical phone-camera scanning are open at the time of this entry. A narrow browser viewport is used for layout verification.
