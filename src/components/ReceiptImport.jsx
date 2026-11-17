@@ -1,3 +1,4 @@
+import ImportMethodLabel from './ImportMethodLabel.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { validateFoodPhoto } from '../domain/foodRecognition.js';
 import { receiptItems, RECEIPT_TEXT_LIMIT } from '../domain/receipt.js';
@@ -52,7 +53,7 @@ export default function ReceiptImport({ onReview, disabled = false }) {
       if (alive.current && request === version.current) { setBusy(false); setProgress(''); controller.current = null; }
     }
   }
-  return <details className="panel mb-6"><summary className="cursor-pointer text-xl font-semibold">Add food from a grocery receipt <span className="feature-status ml-2">OCR preview</span></summary><div className="mt-4">
+  return <details name="pantry-food-import" className="panel pantry-import-card mb-6"><summary className="pantry-import-summary" aria-label="Add food from a grocery receipt"><ImportMethodLabel method="receipt" /></summary><div className="mt-4">
     <p>Read a receipt photo, check possible grocery items, then review each item in the pantry form.</p><p className="mt-2 text-sm">Receipt photos and extracted text stay on this device. Internet access is needed to download the OCR tools; no paid OCR API is used. Only the item details you explicitly save go into your pantry.</p>
     <div className="photo-import-layout mt-5"><div className="food-form"><label>Upload a receipt photo<input type="file" accept="image/jpeg,image/png,image/webp" disabled={busy || disabled} onChange={choose} /></label><label>Take a receipt photo<input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" disabled={busy || disabled} onChange={choose} /></label><p className="text-xs text-stone-600">Use a sharp, upright photo with the whole receipt in good light. JPEG, PNG or WebP, up to 8 MB and 24 megapixels. PDFs and HEIC are not supported.</p><div className="flex flex-wrap gap-3"><button className="primary" disabled={!ready || busy || disabled} onClick={scan}>{busy ? 'Reading receipt…' : 'Read receipt'}</button>{busy && <button className="secondary" onClick={() => { cancel(); setMessage('Receipt reading cancelled. Nothing has been saved.'); }}>Cancel receipt reading</button>}{file && !busy && <button className="secondary" disabled={disabled} onClick={reset}>Clear receipt</button>}</div></div>
       <div>{url && <img key={url} ref={image} src={url} alt="Your selected receipt for local text extraction" className="food-photo-preview" onLoad={() => {

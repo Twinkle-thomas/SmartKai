@@ -79,5 +79,6 @@ test('meal shopping review distinguishes exact stock matches and opens an explic
 });
 test('inventory history handles failures and can reload confirmed partial outcomes',async()=>{
  const limit=vi.fn().mockResolvedValueOnce({error:new Error('Offline')}).mockResolvedValueOnce({data:[{id:'event',food_name:'Rice',quantity:0.5,unit:'bags',outcome:'Discarded',reason:'Damaged',created_at:'2026-11-05T00:00:00Z'}]});const query={select:()=>query,eq:()=>query,order:()=>query,limit};const user=userEvent.setup();render(<React.StrictMode><InventoryHistory client={{from:()=>query}} userId="A"/></React.StrictMode>);
+ await user.click(screen.getByText('Consumption & disposal history'));
  await user.click(screen.getByRole('button',{name:'Load outcome history'}));expect(await screen.findByRole('alert')).toHaveTextContent('Could not load');await user.click(screen.getByRole('button',{name:'Refresh outcome history'}));expect(await screen.findByText(/Damaged/)).toBeInTheDocument();
 });

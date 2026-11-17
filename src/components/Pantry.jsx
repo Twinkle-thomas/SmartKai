@@ -31,6 +31,16 @@ export default function Pantry({ client, userId, initialFilter = 'All items', vi
   const [now, setNow] = useState(() => new Date());
   const [pickerOpen,setPickerOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [quantityError, setQuantityError] = useState('');
+  const [screenMode, setScreenMode] = useState('inventory');
+  const editorTrigger = useRef(null);
+  const previousScreen = useRef('inventory');
+  useEffect(() => {
+    setQuantityError('');
+    if (screenMode !== 'inventory') nameInput.current?.focus();
+    else if (previousScreen.current !== 'inventory') editorTrigger.current?.focus();
+    previousScreen.current = screenMode;
+  }, [screenMode]);
   const [deleting, setDeleting] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -64,7 +74,7 @@ export default function Pantry({ client, userId, initialFilter = 'All items', vi
     try {
       await operation();
       if (active.current) {
-        setMessage(success); setForm(blank(view === 'leftovers')); setEditing(null); setDeleting(null);
+        setMessage(success); setForm(blank(view === 'leftovers')); setEditing(null); setDeleting(null); setScreenMode('inventory');
         await load();
       }
     } catch (failure) {
@@ -77,12 +87,12 @@ export default function Pantry({ client, userId, initialFilter = 'All items', vi
     mutate(() => service.save(form, editing), editing ? 'Food item updated.' : 'Food item added.');
   }
   function edit(item) {
-    setEditing(item.id); setForm({ ...item, food_date: item.food_date ?? '' }); setError(''); setMessage('');
+    setScreenMode('edit'); setEditing(item.id); setForm({ ...item, food_date: item.food_date ?? '' }); setError(''); setMessage('');
     nameInput.current?.focus();
   }
   function reviewImport(suggestion) {
     if (lock.current) return;
-    setForm(suggestion); setEditing(null); setError(''); setMessage('Review the suggested name, storage location, quantity and unit before adding this food.');
+    setScreenMode('add'); setForm(suggestion); setEditing(null); setError(''); setMessage('Review the suggested name, storage location, quantity and unit before adding this food.');
     nameInput.current?.focus();
   }
   const base = filter === 'Inventory history' ? items.filter(item=>!isActiveFood(item)) : filter === 'Leftover history' ? items.filter((item) => item.is_leftover && !isActiveFood(item)) : visibleFood(items, filter);
@@ -97,18 +107,29 @@ export default function Pantry({ client, userId, initialFilter = 'All items', vi
   async function saveIngredients(selected) {
     await service.saveMany(selected);
     if(!active.current)return;
-    setPickerOpen(false);setForm(blank());setEditing(null);setFilter('All items');setCategory('All categories');setDateFilter('All dates');setError('');setMessage(`${selected.length} ingredients added to your pantry.`);
+    setPickerOpen(false);setScreenMode('inventory');setForm(blank());setEditing(null);setFilter('All items');setCategory('All categories');setDateFilter('All dates');setError('');setMessage(`${selected.length} ingredients added to your pantry.`);
     await load();
   }
   if(pickerOpen&&userId)return <Suspense fallback={<p role="status">Opening ingredient list…</p>}><IngredientPicker existingItems={items} initialLocation={LOCATIONS.includes(filter)?filter:'Fridge'} onClose={()=>setPickerOpen(false)} onSave={saveIngredients}/></Suspense>;
   return <>
-    <div className="workspace-intro"><p className="eyebrow">Your household / {view === 'barcode' ? 'Barcodes' : view === 'expiry' ? 'Food dates' : view === 'leftovers' ? 'Leftovers' : 'Pantry'}</p><h1>{view === 'barcode' ? <>Scan. Check. Review.<br/><span>A simpler product lookup.</span></> : view === 'expiry' ? <>A date to remember.<br /><span>A clearer view of food.</span></> : view === 'leftovers' ? <>Another meal.<br /><span>A plan for what’s left.</span></> : <>Good food.<br /><span>In plain sight.</span></>}</h1><p>{view === 'expiry' ? 'Review recorded dates. Highlighting a date does not determine whether food is safe.' : view === 'leftovers' ? 'Record leftovers, choose a planned-use date and keep a history of whole-entry outcomes.' : 'See what you have, record food dates and make space for what you want to use first.'}</p><div className="mt-4 flex flex-wrap gap-4">{view === 'pantry' && userId && <button ref={pickerTrigger} className="primary" disabled={busy} onClick={()=>setPickerOpen(true)}>＋ Add ingredients</button>}<a className="text-link" href="#/expiry">Food-date tracker ↗</a><a className="text-link" href="#/leftovers">Leftover manager ↗</a><a className="text-link" href="#/storage">Storage guide ↗</a>{view === 'leftovers' && <a className="text-link" href="#/meals">Plan how to use leftovers ↗</a>}</div></div>
-    {!userId ? <section className="panel"><h2>Keep your pantry in one place</h2><p>Sign in to add and save food items.</p><a className="primary mt-4" href="#/login">Sign in to manage pantry</a></section> : <><Suspense fallback={null}>{view === 'pantry' && <><ReceiptImport disabled={busy} onReview={reviewImport} /><FoodPhotoImport disabled={busy} onReview={reviewImport} /><BarcodeImport disabled={busy} onReview={reviewImport} /></>}{view === 'barcode' && <BarcodeImport disabled={busy} onReview={reviewImport} />}</Suspense>{['pantry','leftovers'].includes(view)&&<InventoryHistory client={client} userId={userId}/>} {view==='leftovers'&&<section className="panel mb-6"><h2 className="text-2xl font-semibold">Give suitable leftovers a plan</h2><p className="mt-3">Consider using suitable cooked vegetables in a soup or frittata, or planning a leftover lunch. Check the original preparation date, storage history and packaging first. These ideas do not establish food safety.</p><a className="text-link mt-3" href="#/storage?topic=Leftovers">Read New Zealand leftover storage guidance ↗</a><a className="secondary mt-3" href="#/meals">Plan a leftover meal</a></section>}{view==='expiry'&&<><button className="secondary mb-4" onClick={()=>setCalendar(!calendar)}>{calendar?'Hide calendar':'Show calendar'}</button>{calendar&&<ExpiryCalendar items={items} onEdit={edit}/>}</>}<div className="food-workspace">
-      <section className="panel"><h2 className="text-2xl font-semibold">{editing ? 'Edit food item' : 'Add food item'}</h2>
+    <div className="workspace-intro"><p className="eyebrow">Your household / {view === 'barcode' ? 'Barcodes' : view === 'expiry' ? 'Food dates' : view === 'leftovers' ? 'Leftovers' : 'Pantry'}</p><h1>{view === 'barcode' ? <>Scan. Check. Review.<br/><span>A simpler product lookup.</span></> : view === 'expiry' ? <>A date to remember.<br /><span>A clearer view of food.</span></> : view === 'leftovers' ? <>Another meal.<br /><span>A plan for what’s left.</span></> : <>Good food.<br /><span>In plain sight.</span></>}</h1><p>{view === 'expiry' ? 'Review recorded dates. Highlighting a date does not determine whether food is safe.' : view === 'leftovers' ? 'Record leftovers, choose a planned-use date and keep a history of whole-entry outcomes.' : 'See what you have, record food dates and make space for what you want to use first.'}</p><div className="mt-4 flex flex-wrap gap-4">{userId && <button ref={editorTrigger} className="primary" disabled={busy} onClick={() => { setForm(blank(view === 'leftovers')); setEditing(null); setError(''); setMessage(''); setScreenMode('add'); }}>＋ Add food</button>}{view === 'pantry' && userId && <button ref={pickerTrigger} className="primary" disabled={busy} onClick={()=>setPickerOpen(true)}>＋ Add ingredients</button>}<a className="text-link" href="#/expiry">Food-date tracker ↗</a><a className="text-link" href="#/leftovers">Leftover manager ↗</a><a className="text-link" href="#/storage">Storage guide ↗</a>{view === 'leftovers' && <a className="text-link" href="#/meals">Plan how to use leftovers ↗</a>}</div></div>
+    {!userId ? <section className="panel"><h2>Keep your pantry in one place</h2><p>Sign in to add and save food items.</p><a className="primary mt-4" href="#/login">Sign in to manage pantry</a></section> : <><Suspense fallback={null}>{view === 'pantry' && screenMode === 'add' && <div className="pantry-import-options"><ReceiptImport disabled={busy} onReview={reviewImport} /><FoodPhotoImport disabled={busy} onReview={reviewImport} /><BarcodeImport disabled={busy} onReview={reviewImport} /></div>}{view === 'barcode' && <BarcodeImport disabled={busy} onReview={reviewImport} />}</Suspense>{view==='leftovers'&&<section className="panel mb-6"><h2 className="text-2xl font-semibold">Give suitable leftovers a plan</h2><p className="mt-3">Consider using suitable cooked vegetables in a soup or frittata, or planning a leftover lunch. Check the original preparation date, storage history and packaging first. These ideas do not establish food safety.</p><a className="text-link mt-3" href="#/storage?topic=Leftovers">Read New Zealand leftover storage guidance ↗</a><a className="secondary mt-3" href="#/meals">Plan a leftover meal</a></section>}{view==='expiry'&&<><button className="secondary mb-4" onClick={()=>setCalendar(!calendar)}>{calendar?'Hide calendar':'Show calendar'}</button>{calendar&&<ExpiryCalendar items={items} onEdit={edit}/>}</>}<div className="food-workspace pantry-focused-workspace">
+      {screenMode !== 'inventory' && <section className="panel pantry-editor"><button className="text-link mb-4" type="button" disabled={busy} onClick={() => { setScreenMode('inventory'); setEditing(null); setForm(blank(view === 'leftovers')); setError(''); editorTrigger.current?.focus(); }}>← Back to your food</button><h2 className="text-2xl font-semibold">{editing ? 'Edit food item' : 'Add food item'}</h2>
         <form className="food-form mt-4" onSubmit={submit}>
           <fieldset disabled={busy} className="food-form"><legend className="sr-only">Food details</legend>
             <label>Food name<input ref={nameInput} required maxLength={100} value={form.name} onChange={(e) => change('name', e.target.value)} /></label>
-            <div className="food-form-pair"><label>Quantity<input type="number" min="0.001" max="100000" step="0.001" required value={form.quantity} onChange={(e) => change('quantity', e.target.value)} /></label><label>Unit<input required maxLength={30} value={form.unit} onChange={(e) => change('unit', e.target.value)} /></label></div>
+            <div className="food-form-pair"><label>Quantity<input type="number" min="0.001" max="100000" step="0.001" required value={form.quantity}
+              aria-invalid={quantityError ? true : undefined}
+              aria-describedby={quantityError ? 'pantry-quantity-error' : undefined}
+              onInvalid={(event) => {
+                event.preventDefault();
+                const input = event.currentTarget;
+                setQuantityError(input.validity.valueMissing ? 'Enter a quantity.' : 'Enter a quantity greater than zero and up to 100,000, with at most three decimal places.');
+                input.focus();
+              }}
+              onChange={(event) => { setQuantityError(''); change('quantity', event.target.value); }} />
+              {quantityError && <span id="pantry-quantity-error" role="alert" className="text-sm text-red-800">{quantityError}</span>}
+            </label><label>Unit<input required maxLength={30} value={form.unit} onChange={(e) => change('unit', e.target.value)} /></label></div>
             <label>Storage location<select value={form.location} onChange={(e) => change('location', e.target.value)}>{LOCATIONS.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label>Food category<select value={form.category ?? 'Other'} onChange={(e) => change('category',e.target.value)}>{CATEGORIES.map((value) => <option key={value}>{value}</option>)}</select></label>
             <label>Food-date type<select value={form.date_type} onChange={(e) => setForm((previous) => ({ ...previous, date_type: e.target.value, food_date: e.target.value === 'Not recorded' ? '' : previous.food_date }))}>{DATE_TYPES.map((value) => <option key={value}>{value}</option>)}</select></label>
@@ -117,16 +138,16 @@ export default function Pantry({ client, userId, initialFilter = 'All items', vi
             <label className="food-checkbox"><input type="checkbox" checked={form.is_leftover} onChange={(e) => setForm((previous) => ({ ...previous, is_leftover: e.target.checked, planned_use_date: e.target.checked ? previous.planned_use_date : '', leftover_status: e.target.checked ? previous.leftover_status : 'Available' }))} />This is a leftover</label>
             {form.is_leftover && <><label>Preparation date<input type="date" value={form.prepared_date??''} onChange={e=>change('prepared_date',e.target.value)}/></label><label>Stored date<input type="date" value={form.stored_date??''} onChange={e=>change('stored_date',e.target.value)}/></label><label>Planned use date<input type="date" value={form.planned_use_date ?? ''} onChange={(e) => change('planned_use_date',e.target.value)} /></label><p className="text-xs">Your plan is not an expiry or safety deadline.</p><label>Leftover status<select value={form.leftover_status ?? 'Available'} onChange={(e) => setForm((previous) => ({ ...previous, leftover_status: e.target.value, location: e.target.value === 'Frozen' ? 'Freezer' : previous.location }))}>{LEFTOVER_STATES.map((value) => <option key={value} disabled={["Used","Discarded"].includes(value)}>{value}</option>)}</select></label></>}
             <label>Storage instructions or planned use<textarea maxLength={500} rows={3} value={form.notes} onChange={(e) => change('notes', e.target.value)} /></label>
-            <div className="flex flex-wrap gap-3"><button className="primary" type="submit">{busy ? 'Saving…' : editing ? 'Update food item' : 'Add food item'}</button>{editing && <button className="secondary" type="button" onClick={() => { setForm(blank(view === 'leftovers')); setEditing(null); }}>Cancel editing</button>}</div>
+            <div className="flex flex-wrap gap-3"><button className="primary" type="submit">{busy ? 'Saving…' : editing ? 'Update food item' : 'Add food item'}</button>{editing && <button className="secondary" type="button" onClick={() => { setForm(blank(view === 'leftovers')); setEditing(null); setScreenMode('inventory'); editorTrigger.current?.focus(); }}>Cancel editing</button>}</div>
           </fieldset>
         </form>
-        <p role="status" className="mt-3">{message}</p>{error && <p role="alert" className="mt-3 text-red-800">{error}</p>}
-      </section>
-      <section className="panel" aria-labelledby="pantry-list-title"><div className="flex flex-wrap items-center justify-between gap-3"><h2 id="pantry-list-title" className="text-2xl font-semibold">Your food</h2><button className="secondary" disabled={busy || state === 'loading'} onClick={load}>Refresh pantry</button></div>
+        {error && <p role="alert" className="mt-3 text-red-800">{error}</p>}
+      </section>}
+      {screenMode === 'inventory' && <section className="panel" aria-labelledby="pantry-list-title"><div className="flex flex-wrap items-center justify-between gap-3"><h2 id="pantry-list-title" className="text-2xl font-semibold">Your food</h2><button className="secondary" disabled={busy || state === 'loading'} onClick={load}>Refresh pantry</button></div>
         <div className="food-form-pair food-form mt-3"><label>Search saved food<input type="search" value={search} onChange={e=>setSearch(e.target.value)}/></label><label>Sort saved food<select value={sort} onChange={e=>setSort(e.target.value)}>{['Use first','Name','Quantity'].map(value=><option key={value}>{value}</option>)}</select></label></div><label className="food-filter">Show food<select value={filter} onChange={(e) => setFilter(e.target.value)}>{['All items', 'Use first', 'Leftovers', 'Leftover history', 'Inventory history', ...LOCATIONS].map((value) => <option key={value}>{value}</option>)}</select></label>
-        <div className="food-form-pair mt-3"><label className="food-filter">Filter category<select value={category} onChange={(e) => setCategory(e.target.value)}>{['All categories',...CATEGORIES].map((value) => <option key={value}>{value}</option>)}</select></label><label className="food-filter">Filter dates<select value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}>{['All dates','Due soon','Today','Date passed','No expiry date'].map((value) => <option key={value}>{value}</option>)}</select></label></div>
+        <details className="pantry-more-filters"><summary>More filters</summary><div className="food-form-pair mt-3"><label className="food-filter">Filter category<select value={category} onChange={(e) => setCategory(e.target.value)}>{['All categories',...CATEGORIES].map((value) => <option key={value}>{value}</option>)}</select></label><label className="food-filter">Filter dates<select value={dateFilter} onChange={(e) => setDateFilter(e.target.value)}>{['All dates','Due soon','Today','Date passed','No expiry date'].map((value) => <option key={value}>{value}</option>)}</select></label></div>
         <label className="food-filter">Look ahead<select value={horizon} onChange={(e) => setHorizon(Number(e.target.value))}>{[1,3,7,14].map((value) => <option key={value} value={value}>{value} days</option>)}</select></label>
-        <p className="mt-3 text-sm">Use dates and storage instructions on the packaging. Dates and the “use first” flag here do not establish whether food is safe to eat.</p>
+        </details><p className="mt-3 text-sm">Use dates and storage instructions on the packaging. Dates and the “use first” flag here do not establish whether food is safe to eat.</p>
         {state === 'loading' && <p role="status" className="mt-4">Loading pantry…</p>}
         {state === 'error' && <p role="alert" className="mt-4">Could not load pantry. Check your connection and refresh.</p>}
         {state === 'ready' && <><p className="mt-3 text-xs">{items.length} saved items (up to 500 displayed). Consumed/discarded entries are kept in Inventory history.</p>{!shown.length && <p className="mt-4">No food items in this view yet.</p>}<ul className="food-item-list">{shown.map((item) => <li key={item.id}>
@@ -137,7 +158,7 @@ export default function Pantry({ client, userId, initialFilter = 'All items', vi
           <div className="mt-3 flex flex-wrap gap-3"><button className="secondary" disabled={busy} onClick={() => edit(item)} aria-label={`Edit ${item.name}`}>Edit</button><button className="secondary" disabled={busy} onClick={() => setDeleting(item.id)} aria-label={`Delete ${item.name}`}>Delete</button></div>
           {deleting === item.id && <div className="mt-3" role="group" aria-label={`Confirm deletion of ${item.name}`}><p>Delete {item.name} from your pantry?</p><button className="secondary mt-2" disabled={busy} onClick={() => mutate(() => service.remove(item.id), 'Food item deleted.')}>Confirm delete</button> <button className="secondary" disabled={busy} onClick={() => setDeleting(null)}>Keep item</button></div>}
         </li>)}</ul></>}
-      </section>
-    </div></>}
+      </section>}
+    </div><p role="status" className="mt-3">{message}</p>{screenMode === 'inventory' && error && <p role="alert" className="mt-3 text-red-800">{error}</p>}{screenMode === 'inventory' && ['pantry','leftovers'].includes(view) && <InventoryHistory client={client} userId={userId}/>}</>}
   </>;
 }

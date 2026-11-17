@@ -18,7 +18,7 @@ async function upload(user) {
 }
 test('receipt extraction requires an action, offers reviewed items without quantities and clears local data', async () => {
   const review = vi.fn(); const user = userEvent.setup(); render(<ReceiptImport onReview={review} />);
-  await user.click(screen.getByText('Add food from a grocery receipt', { exact: false }).closest('summary'));
+  await user.click(screen.getByLabelText('Add food from a grocery receipt', { exact: false }).closest('summary'));
   await upload(user); expect(mocks.read).not.toHaveBeenCalled();
   await user.click(screen.getByRole('button', { name: 'Read receipt' }));
   await user.click(await screen.findByRole('button', { name: 'Review receipt item 1: MILK 2L' }));
@@ -33,7 +33,7 @@ test('receipt extraction requires an action, offers reviewed items without quant
 });
 test('receipt text can be corrected and reparsed without pretending to recognise food', async () => {
   const user = userEvent.setup(); render(<ReceiptImport onReview={vi.fn()} />);
-  await user.click(screen.getByText('Add food from a grocery receipt', { exact: false }).closest('summary'));
+  await user.click(screen.getByLabelText('Add food from a grocery receipt', { exact: false }).closest('summary'));
   await user.type(screen.getByLabelText('Receipt text to review or paste'), 'BREAD 2.80\nTOTAL 2.80');
   await user.click(screen.getByRole('button', { name: 'Find receipt items' }));
   expect(screen.getByRole('button', { name: 'Review receipt item 1: BREAD' })).toBeInTheDocument();
@@ -45,7 +45,7 @@ test('cancelled OCR ignores late results and failures offer manual entry', async
   let finish;
   mocks.read.mockImplementationOnce(() => new Promise((resolve) => { finish = resolve; }));
   const user = userEvent.setup(); render(<ReceiptImport onReview={vi.fn()} />);
-  await user.click(screen.getByText('Add food from a grocery receipt', { exact: false }).closest('summary'));
+  await user.click(screen.getByLabelText('Add food from a grocery receipt', { exact: false }).closest('summary'));
   await upload(user); await user.click(screen.getByRole('button', { name: 'Read receipt' }));
   await user.click(screen.getByRole('button', { name: 'Cancel receipt reading' }));
   expect(mocks.read.mock.calls[0][1].signal.aborted).toBe(true);
@@ -57,7 +57,8 @@ test('cancelled OCR ignores late results and failures offer manual entry', async
 });
 test('reviewed receipt items still require manual quantity, storage and an explicit pantry save', async () => {
   const user = userEvent.setup(); render(<Pantry client={{}} userId="receipt-evaluator" />);
-  await user.click((await screen.findByText('Add food from a grocery receipt', { exact: false })).closest('summary'));
+  await user.click(screen.getByRole('button', { name: /Add food$/ }));
+  await user.click((await screen.findByLabelText('Add food from a grocery receipt', { exact: false })).closest('summary'));
   await upload(user); await user.click(screen.getByRole('button', { name: 'Read receipt' }));
   await user.click(await screen.findByRole('button', { name: 'Review receipt item 1: MILK 2L' }));
   expect(screen.getByLabelText('Food name')).toHaveValue('MILK 2L'); expect(mocks.save).not.toHaveBeenCalled();

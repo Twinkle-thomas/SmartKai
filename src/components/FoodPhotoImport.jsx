@@ -1,3 +1,4 @@
+import ImportMethodLabel from './ImportMethodLabel.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { FOOD_CLASSES, validateFoodPhoto } from '../domain/foodRecognition.js';
 import { LOCATIONS } from '../domain/pantry.js';
@@ -48,7 +49,7 @@ export default function FoodPhotoImport({ onReview, disabled = false }) {
       if (alive.current && request === version.current) { setStage('error'); setError('Could not analyse this photo. Check your internet connection for the model download, try a smaller photo, or add food manually. No suggestions have been saved.'); }
     } finally { lock.current = false; }
   }
-  return <details className="panel photo-import mb-6"><summary className="cursor-pointer text-xl font-semibold">Add food from a photo <span className="feature-status ml-2">AI preview</span></summary>
+  return <details name="pantry-food-import" className="panel photo-import pantry-import-card mb-6"><summary className="pantry-import-summary" aria-label="Add food from a photo"><ImportMethodLabel method="photo" /></summary>
     <div className="mt-4"><p>Upload a fridge, pantry or food photo, then review possible foods before adding anything.</p><p className="mt-2 text-sm">The photo stays on this device. The first analysis downloads an open-source model and needs internet access. There is no paid recognition API or API key.</p>
       <details className="mt-3 text-sm"><summary className="cursor-pointer underline">Which foods can it recognise?</summary><p className="mt-2">{Object.values(FOOD_CLASSES).join(', ')}. This limited model can miss or misidentify food, especially in crowded fridges and packaged groceries. It cannot read expiry dates, establish quantities or determine food safety.</p></details>
       <div className="photo-import-layout mt-5"><div className="food-form">

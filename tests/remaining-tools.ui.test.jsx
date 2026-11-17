@@ -22,6 +22,7 @@ test('food-date filters distinguish passed use-by from approaching best-before a
   const user=userEvent.setup();render(<Pantry client={{}} userId="A" view="expiry"/>);
   await screen.findByText('Use by date passed');
   expect(screen.getByText('Preparation date recorded')).toBeInTheDocument();
+  await user.click(screen.getByText('More filters'));
   await user.selectOptions(screen.getByLabelText('Filter dates'),'Date passed');
   expect(screen.getByRole('heading',{name:'Old milk'})).toBeInTheDocument();
   expect(screen.queryByRole('heading',{name:'Prepared soup'})).not.toBeInTheDocument();
@@ -48,7 +49,7 @@ test('storage guide filters topics and keeps source links available',async()=>{
 test('barcode lookup requires deliberate review and missing catalog products offer manual entry',async()=>{
   mocks.lookup.mockResolvedValueOnce({code:'3017620422003',name:'Demo product',brand:'Example',pack:'200 g'}).mockResolvedValueOnce(null);
   const review=vi.fn();const user=userEvent.setup();render(<BarcodeImport onReview={review}/>);
-  await user.click(screen.getByText('Add food using a barcode').closest('summary'));
+  await user.click(screen.getByLabelText('Add food using a barcode').closest('summary'));
   await user.type(screen.getByLabelText('Product barcode'),'3017620422003');
   await user.click(screen.getByRole('button',{name:'Look up product'}));
   await user.click(await screen.findByRole('button',{name:'Review barcode product'}));
@@ -62,7 +63,7 @@ test('barcode photo decoding remains local until an explicit catalog lookup',asy
   mocks.decode.mockResolvedValue('3017620422003');
   const user=userEvent.setup();const view=render(<BarcodeImport onReview={vi.fn()}/>);
   try{
-    await user.click(screen.getByText('Add food using a barcode').closest('summary'));
+    await user.click(screen.getByLabelText('Add food using a barcode').closest('summary'));
     await user.upload(screen.getByLabelText('Barcode photo'),new File(['barcode'],'barcode.png',{type:'image/png'}));
     fireEvent.load(await screen.findByAltText('Selected barcode for local decoding'));
     await user.click(screen.getByRole('button',{name:'Read barcode photo'}));

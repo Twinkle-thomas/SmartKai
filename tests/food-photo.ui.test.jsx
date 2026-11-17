@@ -21,7 +21,7 @@ async function upload(user) {
 
 test('photo analysis is deliberate and suggestions populate a review form without saving', async () => {
   const review = vi.fn(); const user = userEvent.setup(); render(<FoodPhotoImport onReview={review} />);
-  await user.click(screen.getByText('Add food from a photo', { exact: false }).closest('summary'));
+  await user.click(screen.getByLabelText('Add food from a photo', { exact: false }).closest('summary'));
   expect(mocks.recognize).not.toHaveBeenCalled();
   await upload(user);
   expect(mocks.recognize).not.toHaveBeenCalled();
@@ -36,7 +36,7 @@ test('photo analysis is deliberate and suggestions populate a review form withou
 });
 test('unsupported files, undecodable photos and empty recognition results offer manual entry', async () => {
   const user = userEvent.setup({ applyAccept: false }); render(<FoodPhotoImport onReview={vi.fn()} />);
-  await user.click(screen.getByText('Add food from a photo', { exact: false }).closest('summary'));
+  await user.click(screen.getByLabelText('Add food from a photo', { exact: false }).closest('summary'));
   await user.upload(screen.getByLabelText('Upload a food photo'), new File(['svg'], 'test.svg', { type: 'image/svg+xml' }));
   expect(await screen.findByRole('alert')).toHaveTextContent('Choose a JPEG');
   await upload(user);
@@ -51,7 +51,7 @@ test('unsupported files, undecodable photos and empty recognition results offer 
 test('failed model analysis can be retried without a simulated fallback', async () => {
   mocks.recognize.mockRejectedValueOnce(new Error('offline'));
   const user = userEvent.setup(); render(<FoodPhotoImport onReview={vi.fn()} />);
-  await user.click(screen.getByText('Add food from a photo', { exact: false }).closest('summary'));
+  await user.click(screen.getByLabelText('Add food from a photo', { exact: false }).closest('summary'));
   await upload(user); await user.click(screen.getByRole('button', { name: 'Find possible foods' }));
   expect(await screen.findByRole('alert')).toHaveTextContent('Could not analyse');
   expect(screen.queryByRole('button', { name: 'Review Apple' })).not.toBeInTheDocument();
@@ -60,7 +60,8 @@ test('failed model analysis can be retried without a simulated fallback', async 
 });
 test('pantry requires explicit quantity and unit confirmation before a suggested food is saved', async () => {
   const user = userEvent.setup(); render(<Pantry client={{}} userId="test-account" />);
-  await user.click((await screen.findByText('Add food from a photo', { exact: false })).closest('summary'));
+  await user.click(screen.getByRole('button', { name: /Add food$/ }));
+  await user.click((await screen.findByLabelText('Add food from a photo', { exact: false })).closest('summary'));
   await upload(user); await user.click(screen.getByRole('button', { name: 'Find possible foods' }));
   await user.click(await screen.findByRole('button', { name: 'Review Apple' }));
   expect(screen.getByLabelText('Food name')).toHaveValue('Apple');

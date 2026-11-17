@@ -78,6 +78,7 @@ test('cancelling the picker returns to the existing pantry without writing recor
   await user.click(screen.getByRole('button',{name:/Add ingredients/}));
   await user.click(await screen.findByRole('checkbox',{name:'Select Rice'}));
   await user.click(screen.getByRole('button',{name:'Cancel',exact:true}));
-  await screen.findByRole('heading',{name:'Add food item'});
+  await screen.findByRole('heading',{name:'Your food'});
+  expect(screen.queryByLabelText('Food name')).not.toBeInTheDocument();
   expect(mocks.saveMany).not.toHaveBeenCalled();
 });

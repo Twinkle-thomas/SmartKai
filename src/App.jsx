@@ -5,6 +5,7 @@ import PracticeForm from './components/PracticeForm.jsx';
 import Results from './components/Results.jsx';
 import EvaluatorStorage from './components/EvaluatorStorage.jsx';
 import Dashboard from './components/Dashboard.jsx';
+import WorkspaceNavigation from './components/WorkspaceNavigation.jsx';
 import { SiteHeader, SiteFooter } from './components/SiteChrome.jsx';
 import { useRoute } from './navigation.js';
 import { householdLabel } from './presentation/householdCopy.js';
@@ -55,12 +56,14 @@ function SmartKai({ client }) {
     window.addEventListener('smartkai:new-check-in', reset);
     return () => window.removeEventListener('smartkai:new-check-in', reset);
   }, []);
-  return <>
+  const workspace = !['home', 'not-found', 'login', 'register', 'forgot-password', 'reset-password'].includes(route);
+  return <div className={workspace ? 'workspace-shell' : undefined}>
     <a href="#main" className="skip-link" onClick={(event) => { event.preventDefault(); main.current?.focus(); }}>Skip to content</a>
     <SiteHeader route={route} signedIn={!!session} ready={ready} client={client} />
-    <main id="main" ref={main} tabIndex={-1} className={`page-width ${route === 'home' ? 'homepage' : 'application-page'}`}>
+    <main id="main" ref={main} tabIndex={-1} className={`page-width ${route === 'home' ? 'homepage' : `application-page${workspace ? ' workspace-layout' : ''}`}`}>
       {route === 'home' ? <Suspense fallback={<p role="status" className="workspace-intro">Loading SmartKai…</p>}><HomePage /></Suspense> : route === 'not-found' ? <section className="workspace-intro"><p className="eyebrow">A little off track</p><h1>Let’s find your way back.</h1><p>This page isn’t available.</p><a className="primary mt-6" href="#/">Back to SmartKai</a></section> : ['login', 'register','forgot-password','reset-password'].includes(route) ? <AuthPage client={client} mode={route} /> : <>
-      <nav className="workspace-nav" aria-label="Application navigation"><a href="#/dashboard" aria-current={route === 'dashboard' ? 'page' : undefined}>Overview</a><a href="#/personalisation" aria-current={route === 'personalisation' ? 'page' : undefined}>Your guidance</a><a href="#/pantry" aria-current={route === 'pantry' ? 'page' : undefined}>Pantry</a><a href="#/meals" aria-current={route === 'meals' ? 'page' : undefined}>Meal planner</a><a href="#/shopping" aria-current={route === 'shopping' ? 'page' : undefined}>Shopping list</a><a href="#/waste" aria-current={route === 'waste' ? 'page' : undefined}>Food waste</a><a href="#/tools" aria-current={route === 'tools' ? 'page' : undefined}>All tools</a><a href="#/progress" aria-current={route === 'progress' ? 'page' : undefined}>Monthly check-in</a><a href="#/reminders" aria-current={route === 'reminders' ? 'page' : undefined}>Reminders</a><a href="#/account" aria-current={route === 'account' ? 'page' : undefined}>Account & history</a></nav>
+      <WorkspaceNavigation route={route} />
+      <div className="workspace-content">
       <Suspense fallback={null}><ReminderCenter key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} route={route} /></Suspense>
       {route === 'dashboard' && <Dashboard key={session?.user.id ?? 'guest'} result={result} client={client} signedIn={!!session} />}
       {route === 'pantry' && <Suspense fallback={<p role="status">Loading pantry tools…</p>}><Pantry key={session?.user.id ?? 'guest'} client={client} userId={session?.user.id} initialFilter={hash === '#/pantry/use-first' ? 'Use first' : hash === '#/pantry/leftovers' ? 'Leftovers' : 'All items'} /></Suspense>}
@@ -84,9 +87,10 @@ function SmartKai({ client }) {
         <div id="guidance" className="space-y-6"><Results result={result} ref={resultHeading} /></div>
       </div>
       </>}
-      {!['waste','pantry','progress','reminders','shopping','meals','expiry','leftovers','barcode','storage','sharing','tools'].includes(route) && <EvaluatorStorage client={client} assessment={result} />}
+      {!['dashboard','waste','pantry','progress','reminders','shopping','meals','expiry','leftovers','barcode','storage','sharing','tools'].includes(route) && <EvaluatorStorage client={client} assessment={result} />}
+      </div>
       </>}
     </main>
     <SiteFooter />
-  </>;
+  </div>;
 }

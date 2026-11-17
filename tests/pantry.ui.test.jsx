@@ -19,6 +19,9 @@ test('pantry supports saved add, edit, use-first filter and confirmed delete', a
   mocks.remove.mockImplementation(async () => { entries = []; });
   const user = userEvent.setup(); render(<Pantry client={{}} userId="A" />);
   await screen.findByText('No food items in this view yet.');
+  expect(screen.queryByLabelText('Food name')).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button', { name: /Add food$/ }));
+  expect(screen.queryByRole('heading', { name: 'Your food', exact: true })).not.toBeInTheDocument();
   await user.type(screen.getByLabelText('Food name'), 'Carrots');
   await user.clear(screen.getByLabelText('Quantity')); await user.type(screen.getByLabelText('Quantity'), '500');
   await user.clear(screen.getByLabelText('Unit')); await user.type(screen.getByLabelText('Unit'), 'g');
@@ -87,4 +90,43 @@ test('no saved baseline prompts completion, while failed progress loads offer re
   await screen.findByRole('alert');
   await user.click(screen.getByRole('button', { name: 'Reload check-in' }));
   expect(await screen.findByRole('link', { name: 'Complete your first assessment' })).toHaveAttribute('href', '#/personalisation');
+});
+
+
+test('pantry separates inventory from editing and cancelling leaves the saved record unchanged', async () => {
+  mocks.list.mockResolvedValue([carrot]);
+  const user = userEvent.setup(); render(<Pantry client={{}} userId="A" />);
+  await screen.findByRole('heading', { name: 'Carrots' });
+  expect(screen.queryByLabelText('Food name')).not.toBeInTheDocument();
+  await user.click(screen.getByRole('button', { name: 'Edit Carrots' }));
+  expect(screen.queryByRole('heading', { name: 'Your food', exact: true })).not.toBeInTheDocument();
+  await user.clear(screen.getByLabelText('Quantity'));
+  await user.type(screen.getByLabelText('Quantity'), '200');
+  await user.click(screen.getByRole('button', { name: /Back to your food/ }));
+  expect(screen.getByRole('heading', { name: 'Your food', exact: true })).toBeInTheDocument();
+  expect(screen.getByText('500 g')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Food name')).not.toBeInTheDocument();
+  expect(mocks.save).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: /Add food$/ })).toHaveFocus();
+});
+
+
+test('invalid pantry quantities give feedback in add and edit forms without saving', async () => {
+  mocks.list.mockResolvedValue([carrot]);
+  const user = userEvent.setup();
+  render(<Pantry client={{}} userId="A" />);
+  await screen.findByRole('button', { name: 'Edit Carrots' });
+  for (const [open, submit] of [[/Add food$/, 'Add food item'], ['Edit Carrots', 'Update food item']]) {
+    await user.click(screen.getByRole('button', { name: open }));
+    const name = screen.getByLabelText('Food name');
+    if (!name.value) await user.type(name, 'Carrots');
+    const quantity = screen.getByLabelText('Quantity');
+    await user.clear(quantity);
+    await user.type(quantity, '-1');
+    await user.click(screen.getByRole('button', { name: submit, exact: true }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(/quantity greater than zero/);
+    expect(quantity).toHaveAttribute('aria-invalid', 'true');
+    expect(mocks.save).not.toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: /Back to your food/ }));
+  }
 });
